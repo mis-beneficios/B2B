@@ -1,0 +1,79 @@
+@extends('mails.layout')
+@section('content')
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td align="center" bgcolor="#e9ecef">
+            <table border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; padding-top: 150px;" width="100%">
+                <tr>
+                    <td align="center" bgcolor="#ffffff">
+                        <img alt="Welcome" src="{{ asset('images/mis_beneficios.png') }}" style="display: block; width: 100%; max-width: 50%;" width="600">
+                        </img>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" bgcolor="#e9ecef">
+            <table border="0" cellpadding="0" cellspacing="0" style="max-width: 600px;" width="100%">
+                <tr>
+                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="margin: 0 0 12px; font-size: 32px; font-weight: 400; line-height: 48px;">
+                            Bienvenido, {{ $user->fullName }}
+                        </h1>
+                        <p style="margin: 0;">
+                            Gracias por formar parte de {{env('APP_NAME')}}, le damos una cordial bienvenida, le adjuntamos los datos con los que puede acceder a su
+                            <a href="{{ route('dashboard') }}" style="color: blue">
+                                panel como cliente
+                            </a>
+                            y ver toda la información de tus paquetes:
+                        </p>
+                        <p>
+                            Usuario: {{ $user->username }}
+                        </p>
+                        <p>
+                            Contraseña: {{ base64_decode($user->clave) }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                        <p style="margin: 0;">
+                            Por ultimo le pedimos confirmar su cuenta dando click en el siguiente botón:
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td align="center" bgcolor="#ffffff" style="padding: 12px;">
+                                    <table border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
+                                                <a href="{{ route('verify_usa',$user->user_hash) }}" rel="noopener noreferrer" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;" target="_blank">
+                                                    Confirmar cuenta
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
+                        <p style="margin: 0;">
+                            Gracias
+                            <br>
+                                Equipo {{ env('APP_NAME') }}
+                            </br>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+@endsection
