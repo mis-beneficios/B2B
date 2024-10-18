@@ -2,7 +2,6 @@
 *.zip
 /node_modules
 /public/storage
-/public/files
 /storage/*.key
 /vendor
 .env
