@@ -6,6 +6,7 @@ BEGIN
     DECLARE p_opcion VARCHAR (50);
     DECLARE p_id_pais INT;
     DECLARE p_id_cliente INT;
+    DECLARE p_id_tarjeta INT;
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN 
@@ -18,11 +19,12 @@ BEGIN
     SET success=0;
     SET log='';
     
-    SET p_id_pais=JSON_UNQUOTE(JSON_EXTRACT(p_json, '$.id_pais'));
+    
     SET p_opcion=JSON_UNQUOTE(JSON_EXTRACT(p_json, '$.opcion'));
     
     CASE
         WHEN p_opcion='get_bancos'  THEN
+            SET p_id_pais=JSON_UNQUOTE(JSON_EXTRACT(p_json, '$.id_pais'));
             SELECT id,title FROM bancos 
             WHERE paise_id=p_id_pais
             ORDER BY title; 
@@ -33,6 +35,13 @@ BEGIN
             SELECT id,banco_id,name,banco,numero,mes,ano,cvv2,estatus 
             FROM tarjetas 
             WHERE user_id=p_id_cliente; 
+        
+        WHEN p_opcion='tarjeta_por_usuario' THEN
+            SET p_id_tarjeta=JSON_UNQUOTE(JSON_EXTRACT(p_json, '$.id_tarjeta'));
+            SELECT * FROM tarjetas WHERE id=p_id_tarjeta ; 
+
+        WHEN p_opcion='estatus_tarjetas' THEN
+            SELECT estatus FROM tarjetas GROUP BY estatus ORDER BY estatus; 
 
         WHEN p_opcion='get_estancias' THEN
             SELECT id,solosistema,convenio_id,title,precio,slug,descuento,descripcion,

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Traits\LogTrait;
 use App\Helpers\TarjetaHelper;
 use PhpParser\Node\Stmt\TryCatch;
+use App\Models\Utils;
 
 class TarjetaController extends Controller
 {
@@ -146,10 +147,19 @@ class TarjetaController extends Controller
      */
     public function edit($id)
     {
-        try {                
-            $tarjeta = Tarjeta::findOrFail($id);
+        try { 
+            $p_info = json_encode(['opcion'=>'tarjeta_por_usuario','id_tarjeta'=>$id]);
+            $tarjeta = (new Utils)->get_config($p_info)['data'][0];
+
+            $p_info = json_encode(['opcion'=>'estatus_tarjetas']);
+            $estatus_tarjetas = (new Utils)->get_config($p_info)['data'];  
+            
+            $p_info = json_encode(['opcion'=>'get_bancos','id_pais'=>env('APP_PAIS_ID')]);
+            $bancos = (new Utils)->get_config($p_info)['data'];  
+            
+            //$tarjeta = Tarjeta::findOrFail($id);
             $data['success'] = true;
-            $data['view'] = view('admin.tarjetas.elementos.from_edit', compact('tarjeta'))->render();
+            $data['view'] = view('admin.tarjetas.elementos.from_edit', compact('tarjeta','estatus_tarjetas','bancos'))->render();
 
         } catch (\Exception $e) {
             $data['success'] = false;

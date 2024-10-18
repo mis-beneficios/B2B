@@ -342,6 +342,8 @@
 @include('admin.reservaciones.elementos.modal_reasignar')
  @include('admin.elementos.modales.modalAddTarjeta')
 @include('admin.elementos.modales.modalAddContrato')
+@include('admin.elementos.modales.modalGeneral')
+@include('admin.elementos.modales.modalHistorial')
 @endsection
 
 @section('script')

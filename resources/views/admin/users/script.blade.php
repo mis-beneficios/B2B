@@ -264,6 +264,9 @@
                 url: $(this).attr('action'),
                 type: 'PUT',
                 dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 data: $(this).serialize(),
                 beforeSend: function() {
                     $("#overlay").css("display", "block");
@@ -277,7 +280,6 @@
                         }else{
                             toastr['error'](res.catch);
                         }
-
                     }else{
                         $('#modalGeneral').modal('hide');
                         tabla.ajax.reload();
@@ -1649,6 +1651,9 @@
                         dataType: 'json',
                         beforeSend:function(){
                             $("#overlay").css("display", "block");
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success:function(res){
                             console.log(res);
