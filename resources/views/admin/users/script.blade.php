@@ -194,9 +194,9 @@
                 type: 'POST',
                 dataType: 'json',
                 data: $(this).serialize(),
-		headers: {
-                              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                           },
+		        headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 beforeSend: function() {
                     $("#overlay").css("display", "block");
                 },
@@ -367,9 +367,8 @@
                     url: baseuri + 'admin/contratos/create',
                     type: 'get',
                     dataType: 'json',
-                    data: {
-                        user_id: user_id
-                    },
+                    data: { user_id: user_id},
+                    
                     beforeSend: function() {
                         $("#overlay").css("display", "block");
                     },
@@ -400,7 +399,7 @@
 
             $estancia = $('#estancia_id option:selected').text();
             $estancia_id = $('#estancia_id').val();
-            console.log($estancia_id);
+            //console.log($estancia_id);
             if ($estancia_id != '') {
                 Swal.fire({
                     icon: 'question',
@@ -420,6 +419,9 @@
                             data: $('#add_contrato_user').serialize(),
                             beforeSend:function(){
                                 $("#overlay").css("display", "block");
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             success:function(res){
                                 if (res.success==true) {

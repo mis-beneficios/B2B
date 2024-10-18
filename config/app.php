@@ -190,7 +190,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        App\Providers\BeneficiosServiceProvider::class, // Se comentan para realizar pruebas de servidor
+        //App\Providers\BeneficiosServiceProvider::class, // Se comentan para realizar pruebas de servidor
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,

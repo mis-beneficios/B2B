@@ -16,5 +16,5 @@ yarn-error.log
 /vendor/
 .env
 vendor/
-storage/framework/sessions
-storage/debugbar
+storage/framework/sessions/*
+storage/debugbar/*

@@ -9,7 +9,7 @@
         <div class="row modal-dialog-scrollable">
             <div class="col-lg-6 col-md-12">
                 <div class="accordion" id="accordionExample">
-                    @foreach (session('config.estancias_global') as $estancia)
+                    @foreach ($estancias as $estancia)
                     <div class="card">
                         <div class="card-header btn-estancia " data-id="{{ $estancia['id'] }}" id="heading{{ $loop->iteration }}">
                             <h2 class="mb-0">
@@ -86,8 +86,8 @@
                                 Selecciona una tarjeta
                             </option>
                             @foreach ($tarjetas as $tarjeta)
-                            <option value="{{ $tarjeta->id }}">
-                                {{ $tarjeta->numeroTarjeta }}
+                            <option value="{{ $tarjeta['id'] }}">
+                                {{ $tarjeta['numero'] }}
                             </option>
                             @endforeach
                         </select>
@@ -102,7 +102,7 @@
                             <option value="">
                                 Selecciona una estancia
                             </option>
-                            @foreach (session('config.estancias_global') as $estancia)
+                            @foreach ($estancias as $estancia)
                             <option value="{{ $estancia['id'] }}">
                                 <span class="{{ substr($estancia['title'], -2) == '22' ? 'estancia_22' : '' }}">
                                     {{ $estancia['title'] }}

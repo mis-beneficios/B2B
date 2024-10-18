@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Log;
 use Mail;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Utils;
 
 class UserController extends Controller
 {
@@ -35,7 +36,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        ini_set('max_execution_time', 360000);
+       // ini_set('max_execution_time', 360000);
         $this->middleware('auth');
     }
 
@@ -309,8 +310,9 @@ class UserController extends Controller
             }
             $contratos[$key]['sumario'] = compact('pagos_total', 'pagos_concretados', 'pagos_rechazados', 'pagos_cancelados', 'pagos_bonificados', 'pagos_extras', 'pagos_pendientes', 'saldo_pagado', 'saldo_rechazado', 'saldo_bonificado', 'saldo_extra', 'saldo_pendiente', 'saldo_cancelado', 'saldo_total');
         }
-
-        return view('admin.users.show', compact('user', 'contratos', 'historial', 'ejecutivos', 'cont'));
+        $p_info = json_encode(['opcion'=>'get_bancos','id_pais'=>env('APP_PAIS_ID')]);
+        $bancos = (new Utils)->get_config($p_info)['data'];
+        return view('admin.users.show', compact('user', 'contratos', 'historial', 'ejecutivos', 'cont','bancos'));
     }
 
     /**

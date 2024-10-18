@@ -3,7 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
+use Auth;
+use Log;
 class Banco extends Model
 {
     protected $table    = 'bancos';

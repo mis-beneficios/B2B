@@ -61,27 +61,13 @@
                             <span class="text-danger error-cvv2 errors">
                             </span>
                         </div>
-                        {{-- <div class="form-group col-md-8">
-                            <label for="inputPassword4">
-                                Banco emisor
-                            </label>
-                            <select class="js-example-responsive js-states form-control " id="banco" name="banco">
-                                @foreach ($bancos_mx as $banco)
-                                <option class="text-uppercase" value="{{ $banco['id'] }}">
-                                    {{ $banco['title'] }}
-                                </option>
-                                @endforeach
-                            </select>
-                            <span class="text-danger error-banco errors">
-                            </span>
-                        </div> --}}
                         <div class="mt-1 col-md-8">
                             <label for="inputPassword4">
                                 Banco emisor
                             </label>
                             <div class="input-group">              
                                 <select class="js-example-responsive js-states form-control" id="banco" name="banco">
-                                    @foreach (session('config.bancos_mx') as $banco)
+                                    @foreach ($bancos as $banco)
                                     <option class="text-uppercase" value="{{ $banco['id'] }}">
                                         {{ $banco['title'] }}
                                     </option>

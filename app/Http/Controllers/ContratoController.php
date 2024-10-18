@@ -28,6 +28,7 @@ use Log;
 use Mail;
 use Storage;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Utils;
 
 class ContratoController extends Controller
 {
@@ -85,13 +86,12 @@ class ContratoController extends Controller
      */
     public function create(Request $request)
     {
-
         $user_id   = $request->user_id;
-        $tarjetas  = Tarjeta::where('user_id', $user_id)->get();
-        $estancias = Estancia::where('estancia_paise_id', env('APP_PAIS_ID'))
-            ->where('habilitada', 1)
-            ->orderBy('id', 'desc')
-            ->get();
+        $p_info = json_encode(['opcion'=>'get_tarjetas','id_pais'=>env('APP_PAIS_ID'),'id_cliente'=>$user_id]);
+        $tarjetas = (new Utils)->get_config($p_info)['data'];
+        $p_info = json_encode(['opcion'=>'get_estancias','id_pais'=>env('APP_PAIS_ID')]);
+        $estancias = (new Utils)->get_config($p_info)['data'];
+
 
         $data['view'] = view('admin.elementos.forms.formAddContrato', compact('tarjetas', 'estancias', 'user_id'))->render();
 
@@ -106,7 +106,7 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-
+        //dd($request->all());
         $validate = $this->validar_form($request);
 
         if ($validate->fails()) {

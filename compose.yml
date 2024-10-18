@@ -1,0 +1,22 @@
+version : "3.8"
+services:
+  mis_beneficios:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: mis_beneficios
+    container_name: mis_beneficios-app
+    restart: unless-stopped
+    working_dir: /var/www/mis_beneficios
+    volumes:
+      - ./:/var/www/mis_beneficios
+    ports:
+      - 8017:80
+    networks:
+      red:
+        aliases:
+          - mis_beneficios.localhost
+networks:
+  red:
+    name: red
+    external: true
