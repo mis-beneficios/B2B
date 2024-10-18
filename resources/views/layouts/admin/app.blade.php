@@ -8,7 +8,7 @@
     <meta content="" name="Sistema administrativo Beneficios Vacacionales" />
     <meta content="" name="ISW. Diego Enrique Sanchez" />
     <meta content="{{ csrf_token() }}" name="csrf-token" />
-    <link href="{{ asset($preload_image) }} " rel="icon" sizes="16x16" type="image/png" />
+    <link href="{{ session('config.preload_image') }} " rel="icon" sizes="16x16" type="image/png" />
     <title>
         Bienvenido {{ env('APP_NAME', 'Mis Beneficios Vacacionales') }}
     </title>
@@ -30,7 +30,7 @@
     <div class="overlay" id="overlay" style="display: none;">
         <div class="overlay__inner">
             <div class="overlay__content">
-                <img src="{{ asset($preload_image) }}" style="width: 280px;" />
+                <img src="{{ session('config.preload_image') }}" style="width: 280px;" />
             </div>
         </div>
     </div>
@@ -302,7 +302,7 @@
             </footer>
         </div>
     </div>
-
+{{--
     @include('admin.elementos.modales.modalSearch')
     @include('admin.elementos.modales.modalHistorial')
     @include('admin.elementos.modales.modalHistorialEmpresa')
@@ -326,6 +326,7 @@
     @include('admin.elementos.modales.modalNotificacionBusqueda')
     @include('admin.elementos.modales.modalNotificacionDescuento')
     @include('admin.elementos.modales.modalClear')
+--}}
     <script>
         // introJs().setOption("dontShowAgain", false).start();
 

@@ -194,6 +194,9 @@
                 type: 'POST',
                 dataType: 'json',
                 data: $(this).serialize(),
+		headers: {
+                              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                           },
                 beforeSend: function() {
                     $("#overlay").css("display", "block");
                 },
@@ -1784,7 +1787,7 @@
 
 
     function cargarEstancias(estancia_id_select) {
-        var estancias = @json($estancias_global);
+        var estancias = @json(session('config.estancias_global'));
         $('#estancia_id').html('')
         $.each(estancias, function(index, val) {
             if (val.id == estancia_id_select) {

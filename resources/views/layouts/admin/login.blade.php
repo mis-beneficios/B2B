@@ -30,7 +30,7 @@
             }
             .wrapper{
               /* Full height */
-                background: url({{ $back_image }});
+                background: url('images/fondos/background_image.jpg');
                 height: 100%;
               /* Center and scale the image nicely */
                 background-position: center;
@@ -82,7 +82,7 @@
         <div class="overlay" id="overlay" style="display: none;">
             <div class="overlay__inner">
                 <div class="overlay__content">
-                    <img src="{{asset($preload_image)}}" style="width: 280px;"/>
+                    <img src="{{session('config.preload_image')}}" style="width: 280px;"/>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
                 <div class="login-box card" style="background-color: rgba(255, 255, 255, 1);">
                     <div class="card-body">
                         <div class="text-center">
-                            <img alt="" class="" src="{{ asset($preload_image) }}" width='200px"/'>
+                            <img alt="" class="" src="{{ session('config.preload_image') }}" width='200px"/'>
                             </img>
                         </div>
                         <form action="{{ route('login') }}" class="form-horizontal form-material" id="loginform" method="post">

@@ -30,9 +30,9 @@
                                 Banco
                             </label>
                             <select class="form-control custom-select select2 m-b-10 select2-multiple select2-hidden-accessible" id="banco_id" multiple="" name="banco_id[]" style="width: 100%;">
-                                @foreach ($bancos_mx as $banco)
-                                <option value="{{ $banco->id }}">
-                                    {{ $banco->title }}
+                                @foreach (session('config.bancos_mx') as $banco)
+                                <option value="{{ $banco['id']}}">
+                                    {{ $banco['title'] }}
                                 </option>
                                 @endforeach
                             </select>

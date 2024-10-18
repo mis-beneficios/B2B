@@ -7,7 +7,7 @@
                 </label>
                 <div class="input-group">
                     <select name="estatus" id="estatus" class="form-control select2">
-                        @foreach ($estatus_tarjetas as $tar => $val)
+                        @foreach (session('config.estatus_tarjetas') as $tar => $val)
                             <option value="{{$tar}}">{{$val}}</option>
                         @endforeach
                     </select>
@@ -68,11 +68,11 @@
                 </label>
                 <div class="input-group">              
                     <select class="js-example-responsive js-states form-control select2" id="banco" name="banco">
-                        @foreach ($bancos_mx as $banco)
-                        <option class="text-uppercase" value="{{ $banco->id }}" @if ($tarjeta->banco_id == $banco->id)
+                        @foreach (session('config.bancos_mx') as $banco)
+                        <option class="text-uppercase" value="{{ $banco['id'] }}" @if ($tarjeta->banco_id == $banco['id'])
                             selected
                         @endif>
-                            {{ $banco->title }}
+                            {{ $banco['title'] }}
                         </option>
                         @endforeach
                     </select>

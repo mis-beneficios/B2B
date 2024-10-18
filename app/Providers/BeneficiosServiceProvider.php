@@ -57,16 +57,16 @@ class BeneficiosServiceProvider extends ServiceProvider
         /**
          * Observadores
          */
-        Reservacion::observe(ReservacionObserver::class);
+       // Reservacion::observe(ReservacionObserver::class);
 
         /**
          * Cargar variable globales en session para optimizar la carga de datos
          */
-        session(['unlock_cards' => false]);
+       // session(['unlock_cards' => false]);
 
-        $this->register_mx();
+        //$this->register_mx();
 
-        view()->composer('*', function ($view) {
+        //view()->composer('*', function ($view) {
             $register         = self::register_mx();
             $bancos_mx        = self::bancos_mx();
             $estancias_global = self::estancias();
@@ -78,23 +78,18 @@ class BeneficiosServiceProvider extends ServiceProvider
             // $notificaciones   = Notificacion::where('estatus', 0)->get();
 
             // Imagen de fondo de login
-            $back_image = Cache::remember('back_image', self::EXPTIME, function () {
-                $config = Configuracion::where('name', 'background_image')->first();
-                return ($config != null && $config->data != null) ? $config->data : 'images/fondos/back2.jpg';
-            });
-
-
+            $config = Configuracion::where('name', 'background_image')->first();
+            $back_image = ($config != null && $config->data != null) ? $config->data : 'images/fondos/back2.jpg';
+            
             // Imagen de preload
-            $preload_image = Cache::remember('preload_image', self::EXPTIME, function () {
-                $config_img = Configuracion::where('name', 'preload_image')->first();
-                return ($config_img != null && $config_img->data != null) ? $config_img->data : 'images/icono01.png';
-            });
+            $config_img = Configuracion::where('name', 'preload_image')->first();
+            $preload_image =  ($config_img != null && $config_img->data != null) ? $config_img->data : 'images/icono01.png';
+           
 
             // Calendario de temporadas
-            $cal_temp = Cache::remember('cal_temp', self::EXPTIME, function () {
-                $config_calendario = Configuracion::where('name', 'calendario_temporadas')->first();
-                return ($config_calendario != null && $config_calendario->data != null) ? $config_calendario->data : 'images/calendario_beneficios_2022-2023.jpg';
-            });
+            $config_calendario = Configuracion::where('name', 'calendario_temporadas')->first();
+            $cal_temp = ($config_calendario != null && $config_calendario->data != null) ? $config_calendario->data : 'images/calendario_beneficios_2022-2023.jpg';
+            
 
             /**
              * carga de datos estatitcs para el funcionamiento de algunas funciones
@@ -252,9 +247,9 @@ class BeneficiosServiceProvider extends ServiceProvider
             );
 
 
-            $view->with([
-                'estancias_global'     => $estancias_global,
-                'bancos_mx'            => $bancos_mx,
+            session(['config'=>[
+                'estancias_global'     => $estancias_global->toArray(),
+                'bancos_mx'            => $bancos_mx->toArray(),
                 'register'             => $register,
                 'roles'                => $roles,
                 'como_se_entero'       => $como_se_entero,
@@ -265,22 +260,22 @@ class BeneficiosServiceProvider extends ServiceProvider
                 'estatus_concal'       => $estatus_concal,
                 'destinos'             => $destinos,
                 'regiones'             => $regiones,
-                'paises'               => $paises,
+                'paises'               => $paises->toArray(),
                 'tipo_reservacion'     => $tipo_reservacion,
                 'estatus_reservacion'  => $estatus_reservacion,
                 'estatus_pago'         => $estatus_pago,
                 'garantia_reservacion' => $garantia_reservacion,
                 'filtros_fecha'        => $filtros_fecha,
                 'tipo_garantia'        => $tipo_garantia,
-                'convenios'            => $convenios_mx,
+                'convenios'            => $convenios_mx->toArray(),
                 'tipo_pago_g'          => $tipo_pago,
                 'back_image'           => $back_image,
                 'preload_image'        => $preload_image,
                 'cal_temp'             => $cal_temp,
                 'tipo_estancia'        => $tipo_estancia,
                 // 'notificaciones'       => $notificaciones,
-            ]);
-        });
+            ]]);
+       // });
     }
 
     /**
@@ -292,9 +287,9 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function estancias()
     {
-        return Cache::remember('estancias_global', self::EXPTIME, function () {
+        //return Cache::remember('estancias_global', self::EXPTIME, function () {
             return  Estancia::where(['habilitada' => 1, 'estancia_paise_id' => env('APP_PAIS_ID', 1)])->select('id', 'title', 'precio', 'habilitada', 'descripcion', 'noches', 'adultos', 'ninos', 'divisa', 'cuotas')->orderBy('id', 'DESC')->get();
-        });
+        //});
     }
 
     /**
@@ -328,9 +323,9 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function bancos_mx()
     {
-        return Cache::remember('bancos_mx', self::EXPTIME, function () {
+        //return Cache::remember('bancos_mx', self::EXPTIME, function () {
             return Banco::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'title']);
-        });
+        //});
     }
 
     /**
@@ -342,9 +337,9 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function convenios_mx()
     {
-        return Cache::remember('convenios_mx', self::EXPTIME, function () {
+        //return Cache::remember('convenios_mx', self::EXPTIME, function () {
             return Convenio::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'empresa_nombre', 'llave']);
-        });
+        //});
     }
 
     /**
@@ -356,9 +351,9 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function destinos()
     {
-        return Cache::remember('destinos', self::EXPTIME, function () {
+        //return Cache::remember('destinos', self::EXPTIME, function () {
             return Destino::pluck('id', 'titulo');
-        });
+        //});
     }
     /**
      * Autor: ISW. Diego Enrique Sanchez
@@ -369,9 +364,9 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function regiones()
     {
-        return Cache::remember('regiones', self::EXPTIME, function () {
+        //return Cache::remember('regiones', self::EXPTIME, function () {
             return Region::pluck('id', 'title');
-        });
+        //});
     }
 
     /**
@@ -384,9 +379,9 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function paises()
     {
 
-        return Cache::remember('paises', self::EXPTIME, function () {
+        //return Cache::remember('paises', self::EXPTIME, function () {
             return Pais::get(['id', 'title']);
-        });
+        //});
     }
 
 
@@ -398,7 +393,6 @@ class BeneficiosServiceProvider extends ServiceProvider
      */
     private static function notificaciones()
     {
-
         $notificaciones = Notificacion::where('estatus', 0)->get();
         foreach ($notificaciones as $notificacion) {
             setcookie('cookie_' . $notificacion->key_cache, 'false', time() + self::EXPTIME * 5, '/');

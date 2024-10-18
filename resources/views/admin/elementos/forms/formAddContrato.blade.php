@@ -9,12 +9,12 @@
         <div class="row modal-dialog-scrollable">
             <div class="col-lg-6 col-md-12">
                 <div class="accordion" id="accordionExample">
-                    @foreach ($estancias_global as $estancia)
+                    @foreach (session('config.estancias_global') as $estancia)
                     <div class="card">
-                        <div class="card-header btn-estancia {{ $estancia->est_especial == 1 ? 'btn-warning text-white' : '' }}" data-id="{{ $estancia->id }}" id="heading{{ $loop->iteration }}">
+                        <div class="card-header btn-estancia " data-id="{{ $estancia['id'] }}" id="heading{{ $loop->iteration }}">
                             <h2 class="mb-0">
                                 <button aria-controls="collapse{{ $loop->iteration }}" aria-expanded="true" class="btn btn-link btn-sm text-wrap" data-target="#collapse{{ $loop->iteration }}" data-toggle="collapse" type="button">
-                                    {{ $estancia->title }}
+                                    {{ $estancia['title'] }}
                                 </button>
                             </h2>
                         </div>
@@ -26,14 +26,14 @@
                                             Precio:
                                         </label>
                                         <span>
-                                            ${{ number_format($estancia->precio,2) . $estancia->divisa}}
+                                            ${{ number_format($estancia['precio'],2) . $estancia['divisa']}}
                                         </span>
                                         <br/>
                                         <span>
                                             <strong class="text-muted">
-                                                {{ $estancia->cuotas }} pagos de:
+                                                {{ $estancia['cuotas'] }} pagos de:
                                             </strong>
-                                            ${{ number_format(($estancia->precio/$estancia->cuotas),2) . $estancia->divisa}}
+                                            ${{ number_format(($estancia['precio']/$estancia['cuotas']),2) . $estancia['divisa']}}
                                         </span>
                                     </div>
                                     <div class="col-md-2">
@@ -41,7 +41,7 @@
                                             Noches:
                                         </label>
                                         <span>
-                                            {{ $estancia->noches }}
+                                            {{ $estancia['noches'] }}
                                         </span>
                                     </div>
                                     <div class="col-md-4">
@@ -49,23 +49,23 @@
                                             Personas:
                                         </label>
                                         <span>
-                                            {{ $estancia->adultos }} Adultos
+                                            {{ $estancia['adultos'] }} Adultos
                                             <br/>
-                                            {{ $estancia->ninos }} Niños
+                                            {{ $estancia['ninos'] }} Niños
                                         </span>
                                     </div>
                                 </div>
                                 <div class="mt-2">
-                                    {!! $estancia->descripcion !!}
+                                    {!! $estancia['descripcion'] !!}
                                 </div>
                                 <div class="mt-2">
                                     <label class="text-muted" for="">
                                         Segmentos:
                                     </label>
-                                    {{ $estancia->cuotas }}
+                                    {{ $estancia['cuotas'] }}
                                 </div>
                                 <div>
-                                    <button class="btn btn-xs btn-info" data-estancia_id="{{ $estancia->id }}" data-estancia_nombre="{{ $estancia->title }}" id="btnSelect">
+                                    <button class="btn btn-xs btn-info" data-estancia_id="{{ $estancia['id'] }}" data-estancia_nombre="{{ $estancia['title'] }}" id="btnSelect">
                                         Seleccionar
                                     </button>
                                 </div>
@@ -102,10 +102,10 @@
                             <option value="">
                                 Selecciona una estancia
                             </option>
-                            @foreach ($estancias_global as $estancia)
-                            <option value="{{ $estancia->id }}">
-                                <span class="{{ substr($estancia->title, -2) == '22' ? 'estancia_22' : '' }}">
-                                    {{ $estancia->title }}
+                            @foreach (session('config.estancias_global') as $estancia)
+                            <option value="{{ $estancia['id'] }}">
+                                <span class="{{ substr($estancia['title'], -2) == '22' ? 'estancia_22' : '' }}">
+                                    {{ $estancia['title'] }}
                                 </span>
                             </option>
                             @endforeach

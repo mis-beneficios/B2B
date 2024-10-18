@@ -67,8 +67,8 @@
                             </label>
                             <select class="js-example-responsive js-states form-control " id="banco" name="banco">
                                 @foreach ($bancos_mx as $banco)
-                                <option class="text-uppercase" value="{{ $banco->id }}">
-                                    {{ $banco->title }}
+                                <option class="text-uppercase" value="{{ $banco['id'] }}">
+                                    {{ $banco['title'] }}
                                 </option>
                                 @endforeach
                             </select>
@@ -81,9 +81,9 @@
                             </label>
                             <div class="input-group">              
                                 <select class="js-example-responsive js-states form-control" id="banco" name="banco">
-                                    @foreach ($bancos_mx as $banco)
-                                    <option class="text-uppercase" value="{{ $banco->id }}">
-                                        {{ $banco->title }}
+                                    @foreach (session('config.bancos_mx') as $banco)
+                                    <option class="text-uppercase" value="{{ $banco['id'] }}">
+                                        {{ $banco['title'] }}
                                     </option>
                                     @endforeach
                                 </select>
