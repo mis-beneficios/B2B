@@ -6,7 +6,6 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="Sistema administrativo Beneficios Vacacionales" />
-    <meta content="" name="ISW. Diego Enrique Sanchez" />
     <meta content="{{ csrf_token() }}" name="csrf-token" />
     <link href="{{ session('config.preload_image') }} " rel="icon" sizes="16x16" type="image/png" />
     <title>
@@ -271,21 +270,17 @@
                     </div>
                 </div>
             </div>
-            {{-- @foreach ($notificaciones as $notificacion)
-                @if ($notificacion->estatus == 0 && in_array(Auth::user()->role, explode(',', $notificacion->show_role)))
-                    @include('admin.notificaciones.mostrar', ['notificacion' => $notificacion])
-                @endif
-                @endforeach --}}
+            {{-- 
+                @foreach ($notificaciones as $notificacion)
+                    @if ($notificacion->estatus == 0 && in_array(Auth::user()->role, explode(',', $notificacion->show_role)))
+                        @include('admin.notificaciones.mostrar', ['notificacion' => $notificacion])
+                    @endif
+                @endforeach 
+            --}}
 
             <footer class="footer" style="width: 100%">
                 <p class="footer-text pull-left m-0">
-                    Copyright ©
-                    2022
-                    Todos los Derechos Reservados ::
-                    <b>
-                        {{ env('APP_NAME') }}
-                    </b>
-                    v3.4
+                    Copyright © 2022cTodos los Derechos Reservados :: <b> {{ env('APP_NAME') }}</b> v3.4
                 </p>
                 <b class="pull-right hidden-xs-down hidden-sm-down hidden-md-down">
                     Design & Development by:
@@ -332,7 +327,6 @@
 
         document.getElementById('modalBuscarCliente').addEventListener('click', function() {
             const input = document.getElementById('text_search_2');
-
             input.focus();
         });
 

@@ -28,7 +28,10 @@ BEGIN
             SELECT id,title FROM bancos 
             WHERE paise_id=p_id_pais
             ORDER BY title; 
-
+        WHEN p_opcion='get_estatus_reservacion'  THEN
+            SELECT * FROM c_estatus_reservacion WHERE activo=1;
+        WHEN p_opcion='get_tipo_reservacion'  THEN
+            SELECT * FROM c_tipo_reservacion WHERE activo=1;
         WHEN p_opcion='get_tarjetas' THEN
             SET p_id_cliente=JSON_UNQUOTE(JSON_EXTRACT(p_json, '$.id_cliente'));
 

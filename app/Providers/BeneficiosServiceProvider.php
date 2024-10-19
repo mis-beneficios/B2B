@@ -192,7 +192,7 @@ class BeneficiosServiceProvider extends ServiceProvider
             /**
              * Reservaciones
              */
-            $tipo_reservacion = array(
+            /*$tipo_reservacion = array(
                 'venta'          => 'Venta',
                 'referido'       => 'Cortesía referidos',
                 'campana'        => 'Cortesía campaña',
@@ -237,14 +237,12 @@ class BeneficiosServiceProvider extends ServiceProvider
                 2 => 'Pago Hotel',
                 3 => 'Pago Cliente',
             );
-
-
-
             $tipo_estancia = array(
                 'estancia'  => 'Estancia',
                 'grupo'     => 'Grupo',
                 'casa'      => 'Casa',
             );
+            */
 
 
             session(['config'=>[
@@ -261,12 +259,12 @@ class BeneficiosServiceProvider extends ServiceProvider
                 'destinos'             => $destinos,
                 'regiones'             => $regiones,
                 'paises'               => $paises->toArray(),
-                'tipo_reservacion'     => $tipo_reservacion,
-                'estatus_reservacion'  => $estatus_reservacion,
-                'estatus_pago'         => $estatus_pago,
-                'garantia_reservacion' => $garantia_reservacion,
-                'filtros_fecha'        => $filtros_fecha,
-                'tipo_garantia'        => $tipo_garantia,
+                //'tipo_reservacion'     => $tipo_reservacion,
+                //'estatus_reservacion'  => $estatus_reservacion,
+                //'estatus_pago'         => $estatus_pago,
+                //'garantia_reservacion' => $garantia_reservacion,
+                //'filtros_fecha'        => $filtros_fecha,
+                //'tipo_garantia'        => $tipo_garantia,
                 'convenios'            => $convenios_mx->toArray(),
                 'tipo_pago_g'          => $tipo_pago,
                 'back_image'           => $back_image,

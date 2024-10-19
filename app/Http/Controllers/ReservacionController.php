@@ -3,21 +3,15 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\Contrato;
+use App\{Contrato,Estancia,Habitacion,Padre,Region,Reservacion,Tarjeta,User};
 use App\ContratosReservaciones as CR;
-use App\Estancia;
 use App\Exports\FiltradoReservaciones;
-use App\Habitacion;
 use App\Helpers\LogHelper;
 use App\Helpers\SmsHelper;
 use App\Mail\Mx\EnviarCuponConfirmacion;
 use App\Mail\Mx\EnviarCuponPago;
-use App\Padre;
-use App\Region;
-use App\Reservacion;
-use App\Tarjeta;
 use App\Traits\ReservacionTrait;
-use App\User;
+use App\Models\Utils;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -1090,10 +1084,46 @@ class ReservacionController extends Controller
     public function filtradoReservaciones($region_id = 1, $tipo = null)
     {
         $this->authorize('filter', Reservacion::class);
+        $p_info = json_encode(['opcion'=>'get_estatus_reservacion','id_pais'=>env('APP_PAIS_ID')]);
+        $estatus_reservaciones = (new Utils)->get_config($p_info)['data'];
+        // Log::debug("estatus reservaciones :: ".print_r($estatus_reservaciones,1));
+
+        $p_info = json_encode(['opcion'=>'get_tipo_reservacion','id_pais'=>env('APP_PAIS_ID')]);
+        $tipo_reservaciones = (new Utils)->get_config($p_info)['data'];
+        
+        $estatus_pago = array(
+            '0' => 'Pendientes',
+            '1' => 'Pagadas',
+        );
+
+        $garantia_reservacion = array(
+            '0' => 'Sin garantizar',
+            '1' => 'Garantizada',
+        );
+
+        $tipo_garantia = array(
+            'Carta'   => 'Carta',
+            'Dinero'  => 'Dinero',
+            'Tarjeta' => 'Tarjeta',
+        );
+        $filtros_fecha = array(
+            0 => 'Ingreso',
+            1 => 'Alta',
+            2 => 'Pago Hotel',
+            3 => 'Pago Cliente',
+        );
+
+        $tipo_estancia = array(
+            'estancia'  => 'Estancia',
+            'grupo'     => 'Grupo',
+            'casa'      => 'Casa',
+        );
 
         $region     = Region::findOrFail($region_id);
         $ejecutivos = User::with(['admin_padre'])->where('role', 'reserver')->get();
-        return view('admin.reservaciones.filtrados', compact('region', 'ejecutivos'));
+
+        return view('admin.reservaciones.filtrados',
+        compact('region', 'ejecutivos','estatus_reservaciones','estatus_pago','garantia_reservacion','tipo_garantia','filtros_fecha','tipo_estancia','tipo_reservaciones'));
     }
 
     /**
@@ -1217,10 +1247,6 @@ class ReservacionController extends Controller
         if (isset($request->ejecutivos)) {
             $data->whereIn('padre_id', $request->ejecutivos);
         }
-
-        // $data->orderBy('fecha_de_ingreso');
-        // whereBetween('fecha_de_ingreso', [$request->fecha_inicio, $request->fecha_fin])
-
         return $data;
     }
 
