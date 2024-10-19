@@ -34,10 +34,10 @@
                                         Estatus
                                     </label>
                                     <select class="form-control custom-select select2 m-b-10 select2-multiple select2-hidden-accessible" id="estatus" multiple="" name="estatus[]" style="width:100%">
-                                        @foreach ($estatus_reservacion as $estatus => $res)
-                                        <option value="{{ $estatus }}">
-                                            {{ $res }}
-                                        </option>
+                                        @foreach ($estatus_reservaciones as $res)
+                                            <option value="{{ $res['descripcion'] }}">
+                                                {{ $res['descripcion'] }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <span class="text-danger error-estatus errors">
@@ -82,14 +82,13 @@
                                         Tipo de reservación
                                     </label>
                                     <select class="form-control custom-select select2 m-b-10 select2-multiple select2-hidden-accessible" id="tipo_reserva" multiple="" name="tipo_reserva[]" style="width:100%">
-                                        @foreach ($tipo_reservacion as $val => $v)
-                                        <option value="{{ $val }}">
-                                            {{ $v }}
+                                        @foreach ($tipo_reservaciones as $v)
+                                        <option value="{{ $v['clave'] }}">
+                                            {{ $v['descripcion'] }}
                                         </option>
                                         @endforeach
                                     </select>
-                                    <span class="text-danger error-garantia errors">
-                                    </span>
+                                    <span class="text-danger error-garantia errors"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-12">
@@ -98,8 +97,7 @@
                                         Destino
                                     </label>
                                     <input class="form-control" name="destino" type="text"/>
-                                    <span class="text-danger error-destino errors">
-                                    </span>
+                                    <span class="text-danger error-destino errors"></span>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-12">
@@ -108,8 +106,7 @@
                                         Hotel
                                     </label>
                                     <input class="form-control" name="hotel" type="text"/>
-                                    <span class="text-danger error-hotel errors">
-                                    </span>
+                                    <span class="text-danger error-hotel errors"></span>
                                 </div>
                             </div>
                         </div>
@@ -117,22 +114,6 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-12 form-group ">
-                                {{--
-                                <div class="form-group ">
-                                    <label class="control-label">
-                                        Tipo
-                                    </label>
-                                    <select class="form-control custom-select select2 m-b-10 select2-multiple select2-hidden-accessible" id="tipo_filtro" multiple="" name="tipo_filtro[]" style="width:100%">
-                                        @foreach ($filtros_fecha as $estatus_f => $res_f)
-                                        <option value="{{ $estatus_f }}">
-                                            {{ $res_f }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-tipo_filtro errors">
-                                    </span>
-                                </div>
-                                --}}
                                 <label class="control-label">
                                     Tipo de filtrado
                                 </label>
@@ -189,11 +170,9 @@
                                     </label>
                                     <select class="form-control custom-select select2 m-b-10 select2-multiple select2-hidden-accessible" id="ejecutivos" multiple="" name="ejecutivos[]" style="width:100%">
                                         @foreach ($ejecutivos as $res)
-                                        @if ($res->admin_padre)
-                                        <option value="{{ $res->admin_padre->id }}">
-                                            {{ $res->fullName }}
-                                        </option>
-                                        @endif
+                                            @if ($res->admin_padre)
+                                                <option value="{{ $res->admin_padre->id }}"> {{ $res->fullName }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <span class="text-danger error-tipo_filtro errors">
@@ -274,10 +253,8 @@
         $('.datepicker').bootstrapMaterialDatePicker({
             weekStart: 0,
             time: false,
-            lang: 'es',
+            lang: 'es'
         });
-
-
         
         $('#formReservaciones').submit(function(event){
             event.preventDefault();
