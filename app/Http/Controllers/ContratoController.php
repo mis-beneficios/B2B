@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Comision;
@@ -87,12 +88,16 @@ class ContratoController extends Controller
     public function create(Request $request)
     {
         $user_id   = $request->user_id;
-        $p_info = json_encode(['opcion'=>'get_tarjetas','id_pais'=>env('APP_PAIS_ID'),'id_cliente'=>$user_id]);
+        $p_info = json_encode(['opcion' => 'get_tarjetas', 'id_pais' => env('APP_PAIS_ID'), 'id_cliente' => $user_id]);
         $tarjetas = (new Utils)->get_config($p_info)['data'];
-        $p_info = json_encode(['opcion'=>'get_estancias','id_pais'=>env('APP_PAIS_ID')]);
-        $estancias = (new Utils)->get_config($p_info)['data'];
+        $p_info = json_encode(['opcion' => 'get_estancias', 'id_pais' => env('APP_PAIS_ID')]);
+        // $estancias = (new Utils)->get_config($p_info)['data'];
+        $estancias =  Estancia::where('estancia_paise_id', env('APP_PAIS_ID'))
+            ->where('habilitada', 1)
+            ->orderBy('id', 'desc')
+            ->get();
 
-
+        // dd($estancias);
         $data['view'] = view('admin.elementos.forms.formAddContrato', compact('tarjetas', 'estancias', 'user_id'))->render();
 
         return response()->json($data);
@@ -106,7 +111,7 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $validate = $this->validar_form($request);
 
         if ($validate->fails()) {
@@ -463,7 +468,6 @@ class ContratoController extends Controller
             $data['name']    = $res['name'];
             $data['pais_id'] = 'eu';
             $data['success'] = true;
-
         } else if ($contrato->estancia->estancia_paise_id == 1 || $contrato->estancia->estancia_paise_id == 0) {
             $res             = $this->contrato_pdf->mostrar_contrato_mx($id);
             $data['formato'] = $res['formato'];
@@ -473,6 +477,7 @@ class ContratoController extends Controller
         } else {
             $data['success'] = false;
         }
+        dd($data);
         return response()->json($data);
     }
 
@@ -630,8 +635,8 @@ class ContratoController extends Controller
             ->join('users as up', 'p.user_id', 'up.id')
             ->select('c.id as contrato_id', 'u.id', DB::raw('concat(u.nombre , " ", u.apellidos) as cliente'), 'con.empresa_nombre', 'p.title as vendedor', 'c.created', DB::raw('count(c.id) as cantidad'))
             ->whereIn('c.estatus', [$estatus])
-        // ->groupBy('c.created', 'cliente', 'u.id', 'contrato_id', 'con.empresa_nombre', 'vendedor')
-        // ->groupBy('c.created', 'cliente')
+            // ->groupBy('c.created', 'cliente', 'u.id', 'contrato_id', 'con.empresa_nombre', 'vendedor')
+            // ->groupBy('c.created', 'cliente')
             ->groupBy('u.id')
             ->orderBy('c.created', 'DESC')
             ->get();
@@ -653,7 +658,6 @@ class ContratoController extends Controller
                 "7" => '<a href="' . route('users.show', $contrato->id) . '" class="btn btn-info btn-xs"><i class="fas fa-eye"></i></a>',
             );
             $btn = '';
-
         }
         //DEVUELVE LOS DATOS EN UN JSON
         $results = array(
@@ -711,7 +715,6 @@ class ContratoController extends Controller
         $padres       = Padre::with('vendedor')->get();
         $data['view'] = view('admin.users.elementos.cambiar_vendedor', compact('contrato', 'padres'))->render();
         return response()->json($data);
-
     }
 
     public function cambiar_vendedor(Request $request, $contrato_id)
@@ -769,7 +772,6 @@ class ContratoController extends Controller
                           </tbody>
                         </table>
                     </div>';
-
         }
 
         return response()->json($data);
@@ -988,5 +990,4 @@ class ContratoController extends Controller
         // return response()->download(public_path() . "/files/filtrados/" . $name);
         return Storage::disk('filtrados')->download($name);
     }
-
 }

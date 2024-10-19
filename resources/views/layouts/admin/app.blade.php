@@ -302,18 +302,19 @@
             </footer>
         </div>
     </div>
-{{--
-    @include('admin.elementos.modales.modalSearch')
-    @include('admin.elementos.modales.modalHistorial')
-    @include('admin.elementos.modales.modalHistorialEmpresa')
-    @include('admin.elementos.modales.modalHistorialPagos')
-    @include('admin.elementos.modales.modalLog')
-    @include('admin.elementos.modales.modalAddTarjeta')
-    @include('admin.elementos.modales.modalAddContrato')
-    @include('admin.elementos.modales.modalCalculador')
-    @include('admin.elementos.modales.modalShowPagos')
-    @include('admin.elementos.modales.modalVerContrato')
     @include('admin.elementos.modales.modalBuscarCliente')
+    @include('admin.elementos.modales.modalSearch')
+
+    {{--
+    -- @include('admin.elementos.modales.modalHistorial')
+    @include('admin.elementos.modales.modalHistorialEmpresa')
+    -- @include('admin.elementos.modales.modalLog')
+    -- @include('admin.elementos.modales.modalAddTarjeta')
+    -- @include('admin.elementos.modales.modalAddContrato')
+    
+    -- @include('admin.elementos.modales.modalShowPagos')
+    -- @include('admin.elementos.modales.modalVerContrato')
+    
     @include('admin.elementos.modales.modalCambioEstancia')
     @include('admin.elementos.modales.modalAddPago')
     @include('admin.elementos.modales.modalGeneral')
@@ -322,7 +323,7 @@
     @include('admin.elementos.modales.modalRechazarPago')
     @include('admin.elementos.modales.modalColor')
     @include('admin.elementos.modales.modalEmpresa')
-    @include('admin.elementos.modales.modalAddReservacion')
+        
     @include('admin.elementos.modales.modalNotificacionBusqueda')
     @include('admin.elementos.modales.modalNotificacionDescuento')
     @include('admin.elementos.modales.modalClear')

@@ -1,4 +1,5 @@
-<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" data-backdrop="static" id="modalRechazarPago" tabindex="-1">
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" data-backdrop="static" id="modalRechazarPago"
+    tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,15 +14,34 @@
             </div>
             <form action="" id="formRechazarPago" method="post">
                 @csrf
-                <input id="pago_id" name="pago_id" type="hidden" value=""/>
-                <input id="tarjeta_id" name="tarjeta_id" type="hidden" value=""/>
-                <input id="estatus" name="estatus" type="hidden" value=""/>
+                <input id="pago_id" name="pago_id" type="hidden" value="" />
+                <input id="tarjeta_id" name="tarjeta_id" type="hidden" value="" />
+                <input id="estatus" name="estatus" type="hidden" value="" />
                 <div class="modal-body">
                     <select class="form-control" id="motivo_del_rechazo" name="motivo_del_rechazo">
+                        @php
+                            $estatus_tarjetas = [
+                                'Cancelada' => 'Cancelada',
+                                'No Aprobada' => 'No Aprobada',
+                                'Confirmada' => 'Confirmada',
+                                'Extraviada' => 'Extraviada',
+                                'Denegada' => 'Denegada',
+                                'Al Dia' => 'Al Día',
+                                'Rechazada' => 'Rechazada',
+                                'Inexistente' => 'Inexistente',
+                                'Erronea' => 'Errónea',
+                                'Retener' => 'Retener',
+                                'Emisor Invalido' => 'Emisor Invalido',
+                                'Bloqueada' => 'Bloqueada',
+                                'Tarjeta Vencida' => 'Tarjeta Vencida',
+                                'Tarjeta Invalida' => 'Tarjeta Invalida',
+                                'Declinada' => 'Declinada',
+                            ];
+                        @endphp
                         @foreach ($estatus_tarjetas as $x => $val)
-                        <option value="{{ $x }}">
-                            {{ $val }}
-                        </option>
+                            <option value="{{ $x }}">
+                                {{ $val }}
+                            </option>
                         @endforeach
                     </select>
                 </div>

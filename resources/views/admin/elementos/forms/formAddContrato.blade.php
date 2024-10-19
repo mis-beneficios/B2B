@@ -1,77 +1,85 @@
 <style>
-    option .estancia_22{
+    option .estancia_22 {
         color: red;
     }
 </style>
 <form action="" id="add_contrato_user">
-    <input id="user_id" name="user_id" type="hidden" value="{{ $user_id }}"/>
+    <input id="user_id" name="user_id" type="hidden" value="{{ $user_id }}" />
+    @csrf
     <div class="modal-body">
         <div class="row modal-dialog-scrollable">
             <div class="col-lg-6 col-md-12">
                 <div class="accordion" id="accordionExample">
                     @foreach ($estancias as $estancia)
-                    <div class="card">
-                        <div class="card-header btn-estancia " data-id="{{ $estancia['id'] }}" id="heading{{ $loop->iteration }}">
-                            <h2 class="mb-0">
-                                <button aria-controls="collapse{{ $loop->iteration }}" aria-expanded="true" class="btn btn-link btn-sm text-wrap" data-target="#collapse{{ $loop->iteration }}" data-toggle="collapse" type="button">
-                                    {{ $estancia['title'] }}
-                                </button>
-                            </h2>
-                        </div>
-                        <div aria-labelledby="heading{{ $loop->iteration }}" class="collapse" data-parent="#accordionExample" id="collapse{{ $loop->iteration }}" style="font-size: 13px;">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <label class="text-muted" for="">
-                                            Precio:
-                                        </label>
-                                        <span>
-                                            ${{ number_format($estancia['precio'],2) . $estancia['divisa']}}
-                                        </span>
-                                        <br/>
-                                        <span>
-                                            <strong class="text-muted">
-                                                {{ $estancia['cuotas'] }} pagos de:
-                                            </strong>
-                                            ${{ number_format(($estancia['precio']/$estancia['cuotas']),2) . $estancia['divisa']}}
-                                        </span>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="text-muted" for="">
-                                            Noches:
-                                        </label>
-                                        <span>
-                                            {{ $estancia['noches'] }}
-                                        </span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="text-muted" for="">
-                                            Personas:
-                                        </label>
-                                        <span>
-                                            {{ $estancia['adultos'] }} Adultos
-                                            <br/>
-                                            {{ $estancia['ninos'] }} Niños
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    {!! $estancia['descripcion'] !!}
-                                </div>
-                                <div class="mt-2">
-                                    <label class="text-muted" for="">
-                                        Segmentos:
-                                    </label>
-                                    {{ $estancia['cuotas'] }}
-                                </div>
-                                <div>
-                                    <button class="btn btn-xs btn-info" data-estancia_id="{{ $estancia['id'] }}" data-estancia_nombre="{{ $estancia['title'] }}" id="btnSelect">
-                                        Seleccionar
+                        <div class="card">
+                            <div class="card-header btn-estancia " data-id="{{ $estancia['id'] }}"
+                                id="heading{{ $loop->iteration }}">
+                                <h2 class="mb-0">
+                                    <button aria-controls="collapse{{ $loop->iteration }}" aria-expanded="true"
+                                        class="btn btn-link btn-sm text-wrap"
+                                        data-target="#collapse{{ $loop->iteration }}" data-toggle="collapse"
+                                        type="button">
+                                        {{ $estancia['title'] }}
                                     </button>
+                                </h2>
+                            </div>
+                            <div aria-labelledby="heading{{ $loop->iteration }}" class="collapse"
+                                data-parent="#accordionExample" id="collapse{{ $loop->iteration }}"
+                                style="font-size: 13px;">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="text-muted" for="">
+                                                Precio:
+                                            </label>
+                                            <span>
+                                                ${{ number_format($estancia['precio'], 2) . $estancia['divisa'] }}
+                                            </span>
+                                            <br />
+                                            <span>
+                                                <strong class="text-muted">
+                                                    {{ $estancia['cuotas'] }} pagos de:
+                                                </strong>
+                                                ${{ number_format($estancia['precio'] / $estancia['cuotas'], 2) . $estancia['divisa'] }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="text-muted" for="">
+                                                Noches:
+                                            </label>
+                                            <span>
+                                                {{ $estancia['noches'] }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="text-muted" for="">
+                                                Personas:
+                                            </label>
+                                            <span>
+                                                {{ $estancia['adultos'] }} Adultos
+                                                <br />
+                                                {{ $estancia['ninos'] }} Niños
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        {!! $estancia['descripcion'] !!}
+                                    </div>
+                                    <div class="mt-2">
+                                        <label class="text-muted" for="">
+                                            Segmentos:
+                                        </label>
+                                        {{ $estancia['cuotas'] }}
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-xs btn-info" data-estancia_id="{{ $estancia['id'] }}"
+                                            data-estancia_nombre="{{ $estancia['title'] }}" id="btnSelect">
+                                            Seleccionar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </div>
@@ -86,9 +94,9 @@
                                 Selecciona una tarjeta
                             </option>
                             @foreach ($tarjetas as $tarjeta)
-                            <option value="{{ $tarjeta['id'] }}">
-                                {{ $tarjeta['numero'] }}
-                            </option>
+                                <option value="{{ $tarjeta['id'] }}">
+                                    {{ $tarjeta['numero'] }}
+                                </option>
                             @endforeach
                         </select>
                         <span class="text-danger error-tarjeta_id errors">
@@ -103,11 +111,11 @@
                                 Selecciona una estancia
                             </option>
                             @foreach ($estancias as $estancia)
-                            <option value="{{ $estancia['id'] }}">
-                                <span class="{{ substr($estancia['title'], -2) == '22' ? 'estancia_22' : '' }}">
-                                    {{ $estancia['title'] }}
-                                </span>
-                            </option>
+                                <option value="{{ $estancia['id'] }}">
+                                    <span class="{{ substr($estancia['title'], -2) == '22' ? 'estancia_22' : '' }}">
+                                        {{ $estancia['title'] }}
+                                    </span>
+                                </option>
                             @endforeach
                         </select>
                         <span class="text-danger error-numero_tarjeta errors">
@@ -135,19 +143,21 @@
                     </div>
                     <div class="form-group col-md-6">
                         <div class="form-check">
-                            <input class="form-check-input filled-in chk-col-red" id="defaultCheck1" name="pago_nomina" type="checkbox" value="1">
-                                <label class="form-check-label md_checkbox_22" for="defaultCheck1">
-                                    Pago por nomina
-                                </label>
+                            <input class="form-check-input filled-in chk-col-red" id="defaultCheck1" name="pago_nomina"
+                                type="checkbox" value="1">
+                            <label class="form-check-label md_checkbox_22" for="defaultCheck1">
+                                Pago por nomina
+                            </label>
                             </input>
                         </div>
                     </div>
                     <div class="form-group col-md-6">
                         <div class="form-check">
-                            <input class="form-check-input filled-in chk-col-red" id="venta_contado" name="venta_contado" type="checkbox" value="1">
-                                <label class="form-check-label md_checkbox_21" for="venta_contado">
-                                    Venta de contado
-                                </label>
+                            <input class="form-check-input filled-in chk-col-red" id="venta_contado"
+                                name="venta_contado" type="checkbox" value="1">
+                            <label class="form-check-label md_checkbox_21" for="venta_contado">
+                                Venta de contado
+                            </label>
                             </input>
                         </div>
                     </div>

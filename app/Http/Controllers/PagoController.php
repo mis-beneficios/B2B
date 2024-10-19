@@ -110,7 +110,6 @@ class PagoController extends Controller
                     $delete_segmento = $request->segmento[$seg - 1];
                 }
                 Pago::where('contrato_id', $contrato->id)->whereIn('estatus', ['Por Pagar'])->where('segmento', '>', $delete_segmento)->delete();
-
             } catch (\Exception $e) {
                 $data['delete_segmentos'] = false;
             }
@@ -133,7 +132,6 @@ class PagoController extends Controller
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();
-
         }
         return response()->json($data);
     }
@@ -250,7 +248,6 @@ class PagoController extends Controller
                 $log .= "+ ** Aplica descuento del $descuento% **\n\n\n";
                 $log .= "\n\n * * * \n\n";
                 $contrato->log = $log . $contrato->log;
-
             }
         } else {
             $contrato->precio_de_compra = $contrato->estancia->precio;
@@ -579,7 +576,7 @@ class PagoController extends Controller
             "info_pagos"    => $info_pagos,
             'view'          => view('admin.elementos.forms.formAddCalculador', compact('con', 'data', 'data_pagos'))->with(['info_pagos' => $info_pagos])->render(),
         );
-
+        // dd($results);
         return response()->json($results);
     }
 
@@ -631,12 +628,10 @@ class PagoController extends Controller
                 $res['success']    = true;
                 $res['eliminados'] = $i;
             }
-
         } catch (\Exception $e) {
             $res['errors'] = $e->getMessage();
         }
         return response()->json($res);
-
     }
 
     public function delete_restantes($contrato_id)
