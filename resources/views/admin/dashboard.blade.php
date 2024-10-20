@@ -42,18 +42,18 @@
     </div>
     <div class="row" id="dashboard">
         {{-- <div class="col-lg col-md">
-        @livewire('admin.panel-count', ['type' => 'por_autorizar'])
-    </div>
-    <div class="col-lg col-md">
-        @livewire('admin.panel-count', ['type' => 'ventas_hoy'])
-    </div>
-    <div class="col-lg col-md">
-        @livewire('admin.panel-count', ['type' => 'clientes'])
-    </div>
-    <div class="col-lg col-md">
-        @livewire('admin.panel-count', ['type' => 'ingresos'])
-    </div>
- --}}
+            @livewire('admin.panel-count', ['type' => 'por_autorizar'])
+        </div>
+        <div class="col-lg col-md">
+            @livewire('admin.panel-count', ['type' => 'ventas_hoy'])
+        </div>
+        <div class="col-lg col-md">
+            @livewire('admin.panel-count', ['type' => 'clientes'])
+        </div>
+        <div class="col-lg col-md">
+            @livewire('admin.panel-count', ['type' => 'ingresos'])
+        </div> --}}
+
 
         <div class="col-lg-3 col-md-6 col-sm-12">
             <div class="card">
@@ -206,199 +206,199 @@
     </div>
     @includeWhen(Auth::user()->id == 691650, 'admin.ajustes.lista_procesos')
 
-    {{-- <livewire:admin.process-list> --}}
-    {{-- @livewire('ajustes.queue') --}}
-@endsection
+    <livewire:admin.process-list>
+        @livewire('ajustes.queue')
+    @endsection
 
 
-@section('script')
-    <script>
-        $(document).ready(function() {
+    @section('script')
+        <script>
+            $(document).ready(function() {
 
-            var datos = @json($grafica);
-            var fecha = [];
-            var ventas = [];
-            var colores = [];
-            var back = [];
-            // var back = [];
-
-
-
-            var ctxi = document.getElementById('chartIngresos').getContext('2d');
-            var myChartIngresos;
-
-            $('#rango').daterangepicker({
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    separator: ' al ',
-                    applyLabel: 'Aplicar',
-                    cancelLabel: 'Cancelar',
-                    fromLabel: 'Desde',
-                    toLabel: 'Hasta',
-                    customRangeLabel: 'Personalizado',
-                    weekLabel: 'W',
-                    daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-                    monthNames: [
-                        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
-                        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-                    ],
-                    firstDay: 1
-                }
-            });
-
-            var rango = $('#rango').val();
-
-            pintar_ingresos(rango);
-
-
-            $('#rango').on('change', function(event) {
-                event.preventDefault();
-                pintar_ingresos($(this).val());
-
-            });
-
-            $.each(datos, function(index, val) {
-                fecha.push(val.fecha);
-                ventas.push(val.ventas);
-                var r = Math.round(Math.random() * 255);
-                var g = Math.round(Math.random() * 255);
-                var b = Math.round(Math.random() * 255);
-                var rgb1 = "rgba(" + r + ", " + g + ", " + b + ", " + .9 + ")";
-                var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
-                back.push(rgb1);
-                colores.push(rgb);
-            });
-
-
-            var ctx = document.getElementById('myChart').getContext('2d');
-
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: fecha,
-                    datasets: [{
-                        label: 'Ventas del mes ',
-                        data: ventas,
-                        backgroundColor: colores,
-                        borderColor: back,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    // responsive: true,
-                    // maintainAspectRatio: false,
-                    tooltips: {
-                        mode: 'point'
-                    }
-                }
-            });
-
-
-            var ventas_data = @json($ventas_equipo);
-            var equipos = [];
-            var ventas_e = [];
-            var colores_e = [];
-
-            $.each(ventas_data, function(index, val) {
-                ventas_e.push(val.ventas);
-                equipos.push(val.equipo);
-                var r = Math.round(Math.random() * 255);
-                var g = Math.round(Math.random() * 255);
-                var b = Math.round(Math.random() * 255);
-                var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
-                var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
-                colores_e.push(rgb);
-            });
-
-
-            var ventas_por_equipo = document.getElementById('ventas_por_equipo').getContext('2d');
-
-            var myChart = new Chart(ventas_por_equipo, {
-                type: 'pie',
-                data: {
-                    labels: equipos,
-                    datasets: [{
-                        label: 'Ventas por equipo',
-                        data: ventas_e,
-                        backgroundColor: colores_e,
-                        borderColor: colores_e,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    tooltips: {
-                        mode: 'point'
-                    }
-                }
-            });
-
-            function pintar_ingresos(rango) {
                 var datos = @json($grafica);
                 var fecha = [];
                 var ventas = [];
                 var colores = [];
                 var back = [];
-                var total = 0;
-                // $('#chartIngresos').html('');
-                $.ajax({
-                        url: baseadmin + 'ingresos/' + rango,
-                        type: 'GET',
-                        dataType: 'JSON',
-                        beforeSend: function() {
-                            // $('#overlay').css('display', 'block');
-                        },
-                        success: function(res) {
-
-                            if (myChartIngresos) {
-                                myChartIngresos
-                            .destroy(); // Destruye el gráfico existente antes de crear uno nuevo
-                            }
-
-
-                            $.each(res.ingresos, function(index, val) {
-                                total += val.cantidad;
-                                fecha.push(val.fecha);
-                                ventas.push(val.cantidad.toFixed(2));
-                                var r = Math.round(Math.random() * 255);
-                                var g = Math.round(Math.random() * 255);
-                                var b = Math.round(Math.random() * 255);
-                                var rgb1 = "rgba(" + r + ", " + g + ", " + b + ", " + .9 + ")";
-                                var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
-                                back.push(rgb1);
-                                colores.push(rgb);
-                            });
-
-                            $('#total').html('$' + total.toFixed(2));
+                // var back = [];
 
 
 
-                            myChartIngresos = new Chart(ctxi, {
-                                type: 'bar',
-                                data: {
-                                    labels: fecha,
-                                    datasets: [{
-                                        label: 'Ingresos',
-                                        data: ventas,
-                                        backgroundColor: colores,
-                                        borderColor: back,
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    // responsive: true,
-                                    // maintainAspectRatio: false,
-                                    tooltips: {
-                                        mode: 'point'
-                                    }
-                                }
-                            });
+                var ctxi = document.getElementById('chartIngresos').getContext('2d');
+                var myChartIngresos;
+
+                $('#rango').daterangepicker({
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        separator: ' al ',
+                        applyLabel: 'Aplicar',
+                        cancelLabel: 'Cancelar',
+                        fromLabel: 'Desde',
+                        toLabel: 'Hasta',
+                        customRangeLabel: 'Personalizado',
+                        weekLabel: 'W',
+                        daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                        monthNames: [
+                            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
+                            'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                        ],
+                        firstDay: 1
+                    }
+                });
+
+                var rango = $('#rango').val();
+
+                pintar_ingresos(rango);
+
+
+                $('#rango').on('change', function(event) {
+                    event.preventDefault();
+                    pintar_ingresos($(this).val());
+
+                });
+
+                $.each(datos, function(index, val) {
+                    fecha.push(val.fecha);
+                    ventas.push(val.ventas);
+                    var r = Math.round(Math.random() * 255);
+                    var g = Math.round(Math.random() * 255);
+                    var b = Math.round(Math.random() * 255);
+                    var rgb1 = "rgba(" + r + ", " + g + ", " + b + ", " + .9 + ")";
+                    var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
+                    back.push(rgb1);
+                    colores.push(rgb);
+                });
+
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: fecha,
+                        datasets: [{
+                            label: 'Ventas del mes ',
+                            data: ventas,
+                            backgroundColor: colores,
+                            borderColor: back,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        // responsive: true,
+                        // maintainAspectRatio: false,
+                        tooltips: {
+                            mode: 'point'
                         }
-                    })
-                    .always(function() {
-                        // $('#overlay').css('display', 'none');
-                    });
+                    }
+                });
 
-            }
-        });
-    </script>
-@stop
+
+                var ventas_data = @json($ventas_equipo);
+                var equipos = [];
+                var ventas_e = [];
+                var colores_e = [];
+
+                $.each(ventas_data, function(index, val) {
+                    ventas_e.push(val.ventas);
+                    equipos.push(val.equipo);
+                    var r = Math.round(Math.random() * 255);
+                    var g = Math.round(Math.random() * 255);
+                    var b = Math.round(Math.random() * 255);
+                    var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
+                    var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
+                    colores_e.push(rgb);
+                });
+
+
+                var ventas_por_equipo = document.getElementById('ventas_por_equipo').getContext('2d');
+
+                var myChart = new Chart(ventas_por_equipo, {
+                    type: 'pie',
+                    data: {
+                        labels: equipos,
+                        datasets: [{
+                            label: 'Ventas por equipo',
+                            data: ventas_e,
+                            backgroundColor: colores_e,
+                            borderColor: colores_e,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        tooltips: {
+                            mode: 'point'
+                        }
+                    }
+                });
+
+                function pintar_ingresos(rango) {
+                    var datos = @json($grafica);
+                    var fecha = [];
+                    var ventas = [];
+                    var colores = [];
+                    var back = [];
+                    var total = 0;
+                    // $('#chartIngresos').html('');
+                    $.ajax({
+                            url: baseadmin + 'ingresos/' + rango,
+                            type: 'GET',
+                            dataType: 'JSON',
+                            beforeSend: function() {
+                                // $('#overlay').css('display', 'block');
+                            },
+                            success: function(res) {
+
+                                if (myChartIngresos) {
+                                    myChartIngresos
+                                        .destroy(); // Destruye el gráfico existente antes de crear uno nuevo
+                                }
+
+
+                                $.each(res.ingresos, function(index, val) {
+                                    total += val.cantidad;
+                                    fecha.push(val.fecha);
+                                    ventas.push(val.cantidad.toFixed(2));
+                                    var r = Math.round(Math.random() * 255);
+                                    var g = Math.round(Math.random() * 255);
+                                    var b = Math.round(Math.random() * 255);
+                                    var rgb1 = "rgba(" + r + ", " + g + ", " + b + ", " + .9 + ")";
+                                    var rgb = "rgba(" + r + ", " + g + ", " + b + ", " + .8 + ")";
+                                    back.push(rgb1);
+                                    colores.push(rgb);
+                                });
+
+                                $('#total').html('$' + total.toFixed(2));
+
+
+
+                                myChartIngresos = new Chart(ctxi, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: fecha,
+                                        datasets: [{
+                                            label: 'Ingresos',
+                                            data: ventas,
+                                            backgroundColor: colores,
+                                            borderColor: back,
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        // responsive: true,
+                                        // maintainAspectRatio: false,
+                                        tooltips: {
+                                            mode: 'point'
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .always(function() {
+                            // $('#overlay').css('display', 'none');
+                        });
+
+                }
+            });
+        </script>
+    @stop

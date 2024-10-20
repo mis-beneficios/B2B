@@ -3,11 +3,13 @@
 namespace App\Traits;
 
 use App\Pago;
-use DB;
 use App\Contrato;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 trait TerminalTrait
 {
-    
+
     /**
      * Autor: ISW Diego Enrique Sanchez
      * Creado: 2023-04-03
@@ -15,80 +17,76 @@ trait TerminalTrait
      */
     public function get_data_terminal($request)
     {
-    
-        // dd(isset($request->nomina), isset($request->terminal), !isset($request->viaserfin));
         set_time_limit(4600);
         ini_set('MEMORY_LIMIT', '512M');
 
 
-        $estatus = array();
-        if (isset($request->pagosRechazados)) {
-            $estatus[] = 'Rechazado';
-        }
-        if (isset($request->pagosPagados)) {
-            $estatus[] = 'Pagado';
-        }
-        if (isset($request->pagosPendientes)) {
-            $estatus[] = 'Por Pagar';
-        }
-        if (isset($request->pagosAnomalías)) {
-            $estatus[] = 'Anomalia';
-        }
+        $estatus = [];
+        if (isset($request->pagosRechazados)) $estatus[] = 'Rechazado';
+        if (isset($request->pagosPagados)) $estatus[] = 'Pagado';
+        if (isset($request->pagosPendientes)) $estatus[] = 'Por Pagar';
+        if (isset($request->pagosAnomalías)) $estatus[] = 'Anomalia';
 
 
         // $divisa = () ? 'USD' : 'MXN';
 
         $data = DB::table('pagos as p')
-        ->join('contratos as con', 'p.contrato_id', '=', 'con.id')
-        ->join('users as u', 'con.user_id', '=', 'u.id')
-        ->join('convenios as conv', 'u.convenio_id', '=', 'conv.id')
-        // ->join('tarjetas as t','con.tarjeta_id', '=', 't.id')
-        // ->join('bancos as b','t.banco_id', '=', 'b.id')
-        ->select('p.*','con.id as contrato_id', 'con.user_id', 
-            'con.tarjeta_id', 'con.via_serfin', 'con.pago_con_nomina',
-            'con.estatus as estatus_contrato', 'con.convenio_id', 'con.precio_de_compra', 
-            'con.sys_key', 'con.divisa', DB::raw('concat(u.nombre, " ", u.apellidos) as cliente'),
-            'con.precio_de_compra',  'conv.empresa_nombre',
-            'u.id as user_id',
-            'con.tarjeta_id as tarjeta_id'
-            // 't.numero as tarjeta_numero', DB::raw('concat(t.mes,"/",t.ano) as tarjeta_vencimiento'),
-            // 'b.title as banco_title'
+            ->join('contratos as con', 'p.contrato_id', '=', 'con.id')
+            ->join('users as u', 'con.user_id', '=', 'u.id')
+            ->join('convenios as conv', 'u.convenio_id', '=', 'conv.id')
+            // ->join('tarjetas as t','con.tarjeta_id', '=', 't.id')
+            // ->join('bancos as b','t.banco_id', '=', 'b.id')
+            ->select(
+                'p.*',
+                'con.id as contrato_id',
+                'con.user_id',
+                'con.tarjeta_id',
+                'con.via_serfin',
+                'con.pago_con_nomina',
+                'con.estatus as estatus_contrato',
+                'con.convenio_id',
+                'con.precio_de_compra',
+                'con.sys_key',
+                'con.divisa',
+                DB::raw('concat(u.nombre, " ", u.apellidos) as cliente'),
+                'con.precio_de_compra',
+                'conv.empresa_nombre',
+                'u.id as user_id',
+                'con.tarjeta_id as tarjeta_id'
+                // 't.numero as tarjeta_numero', DB::raw('concat(t.mes,"/",t.ano) as tarjeta_vencimiento'),
+                // 'b.title as banco_title'
 
-        );
+            );
         $data->whereIn('con.estatus', ['viajado', 'comprado', 'Comprado'])->where('p.cantidad', '>', 0);
-
-       
-
 
         if (isset($request->cobro_int)) {
             $data->where('con.divisa', 'USD');
-        }else{
-            if (isset($request->nomina) && isset($request->terminal) && !isset($request->viaserfin)) {
-                // $data->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 0]);
-                $data->where('con.pago_con_nomina', 1)->orwhere('con.via_serfin', 0);
-            } elseif (isset($request->nomina) && !isset($request->terminal) && isset($request->viaserfin)) {
-                // $data->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 1]);
-                $data->where('con.pago_con_nomina', 1)->orWhere('con.via_serfin', 1);
-            
-            } elseif (isset($request->nomina) && !isset($request->terminal) && !isset($request->viaserfin)) {
-                $data->where('con.pago_con_nomina', 1);
-            
-            } elseif (!isset($request->nomina) && !isset($request->terminal) && isset($request->viaserfin)) {
-                $data->where('con.via_serfin', 1)->where('con.sys_key', '<>', null);
-            
-            } elseif (!isset($request->nomina) && isset($request->terminal) && !isset($request->viaserfin)) {
-                $data->where(['con.pago_con_nomina' => 0, 'con.via_serfin' => 0]);
-            
-            } elseif (!isset($request->nomina) && isset($request->terminal) && isset($request->viaserfin)) {
-                $data->where('con.pago_con_nomina', 0);
-            
-            } elseif (!isset($request->nomina) && !isset($request->terminal) && !isset($request->viaserfin)) {
-                $data->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 1]);
-            }
-            $data->where('con.divisa', '!=', 'USD');
+        } else {
+            $data->where(function ($query) use ($request) {
+
+                if (isset($request->nomina) && isset($request->terminal) && !isset($request->viaserfin)) {
+                    // $data->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 0]);
+                    $query->where('con.pago_con_nomina', 1)->orwhere('con.via_serfin', 0);
+                } elseif (isset($request->nomina) && !isset($request->terminal) && isset($request->viaserfin)) {
+                    // $data->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 1]);
+                    $query->where('con.pago_con_nomina', 1)->orWhere('con.via_serfin', 1);
+                } elseif (isset($request->nomina) && !isset($request->terminal) && !isset($request->viaserfin)) {
+                    $query->where('con.pago_con_nomina', 1);
+                } elseif (!isset($request->nomina) && !isset($request->terminal) && isset($request->viaserfin)) {
+                    $query->where('con.via_serfin', 1)->where('con.sys_key', '<>', null);
+                } elseif (!isset($request->nomina) && isset($request->terminal) && !isset($request->viaserfin)) {
+                    $query->where(['con.pago_con_nomina' => 0, 'con.via_serfin' => 0]);
+                } elseif (!isset($request->nomina) && isset($request->terminal) && isset($request->viaserfin)) {
+                    $query->where('con.pago_con_nomina', 0);
+                } elseif (!isset($request->nomina) && !isset($request->terminal) && !isset($request->viaserfin)) {
+                    $query->where(['con.pago_con_nomina' => 1, 'con.via_serfin' => 1]);
+                }
+            })->where('con.divisa', '!=', 'USD');
         }
-        $data->whereIn('p.estatus', $estatus);
-    
+        if (!empty($estatus)) {
+            $data->whereIn('p.estatus', $estatus);
+        }
+
         if ($request->convenio_id) {
             $data->whereIn('conv.id', $request->convenio_id);
         }
@@ -97,13 +95,22 @@ trait TerminalTrait
         }
         $data->whereBetween('p.fecha_de_cobro', [$request->fecha_inicio, $request->fecha_fin]);
 
-        $res = $data->get();
+        // Obtener los resultados como colección
+        $dataCollection = $data->get();
 
-        // dd($res);
+        // Implementar paginación manual
+        $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Página actual
+        $perPage = 100; // Número de elementos por página
+        $currentItems = $dataCollection->slice(($currentPage - 1) * $perPage, $perPage)->values(); // Slice de la colección
+        $paginatedData = new LengthAwarePaginator($currentItems, $dataCollection->count(), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'query' => $request->query(), // Para mantener los parámetros de la URL
+        ]);
+        return $paginatedData;
 
         // $res = $data->limit(10)->get();
 
-        return $res;
+        // return $res;
     }
 
     public function contratos_nuevos()
@@ -272,15 +279,15 @@ trait TerminalTrait
         $filtrado_serfin->whereNotIn('con.estatus', ['sin_aprobar', 'nuevo', 'cancelado', 'Cancelado', 'pagado', 'suspendido']);
         $filtrado_serfin->where('p.cantidad', '>', '0');
 
-        if($request->select_banco != 'todo') {
+        if ($request->select_banco != 'todo') {
             if ($request->select_banco == "sinBancomer") {
                 $filtrado_serfin->whereNotIn('b.id', [13]);
-            }  
-            if($request->select_banco == "soloBancomer") {
+            }
+            if ($request->select_banco == "soloBancomer") {
                 $filtrado_serfin->whereIn('b.id', [13]);
             }
         }
-        
+
         if (isset($request->con_filtro)) {
             if ($request->condicion == 'solo') {
                 $filtrado_serfin->where('p.segmento', $request->segmento);
@@ -297,9 +304,9 @@ trait TerminalTrait
 
         if ($request->estatus_pago == 'por_pagar') {
             $filtrado_serfin->where('p.estatus', 'Por Pagar');
-        } elseif($request->estatus_pago == 'Rechazado') {
+        } elseif ($request->estatus_pago == 'Rechazado') {
             $filtrado_serfin->where('p.estatus', 'Rechazado');
-        } elseif($request->estatus_pago == 'Pagado') {
+        } elseif ($request->estatus_pago == 'Pagado') {
             $filtrado_serfin->where('p.estatus', 'Pagado');
         }
 
@@ -315,9 +322,8 @@ trait TerminalTrait
         $res = $filtrado_serfin->get();
 
         return $res;
-
     }
-   
+
 
     /**
      * Autor: ISW Diego Enrique Sanchez
@@ -334,7 +340,7 @@ trait TerminalTrait
             DB::raw(" CONCAT('',`u`.`nombre`,', ',IF(`u`.`apellidos` is null, '', `u`.`apellidos`)) as 'usuario'"),
             't.name',
             DB::raw(" CONCAT('', LPAD(`t`.`numero`,20,'0')) AS 'tarjeta'"),
-            DB::raw("'{$request->cantidad_sus}' AS cantidad") ,
+            DB::raw("'{$request->cantidad_sus}' AS cantidad"),
             'b.title',
             'b.clave',
             't.estatus',
@@ -346,7 +352,7 @@ trait TerminalTrait
             DB::raw("SUM(p.cantidad) AS total_pagado"),
             DB::raw("con.precio_de_compra  AS precio_de_compra")
         );
-        
+
         $filtrado_suspendidos->join('pagos as p', 'con.id', '=', 'p.contrato_id');
         $filtrado_suspendidos->join('users as u', 'con.user_id', '=', 'u.id');
         $filtrado_suspendidos->join('convenios as c', 'con.convenio_id', '=', 'c.id');
@@ -360,12 +366,12 @@ trait TerminalTrait
         $filtrado_suspendidos->whereIn('p.estatus', ['Pagado']);
         $filtrado_suspendidos->where('p.cantidad', '>', '0');
 
-        $filtrado_suspendidos->where('con.convenio_id','!=',445);
+        $filtrado_suspendidos->where('con.convenio_id', '!=', 445);
         $filtrado_suspendidos->where('c.paise_id', 1);
 
         $filtrado_suspendidos->where('con.via_serfin', 1);
         $filtrado_suspendidos->whereNotNull('con.sys_key');
-        
+
 
 
         // $filtrado_suspendidos->where('b.paise_id', 1);
@@ -378,7 +384,6 @@ trait TerminalTrait
         $res = $filtrado_suspendidos->get();
 
         return $res;
-
     }
     /**
      * Autor: ISW Diego Enrique Sanchez
@@ -426,7 +431,6 @@ trait TerminalTrait
 
 
         return $filtrado_suspendidos;
-
     }
     /**
      * Autor: ISW Diego Enrique Sanchez
@@ -472,7 +476,7 @@ trait TerminalTrait
             ->where('contratos.via_serfin', '1')
             ->whereNotIn('users.convenio_id', ['455'])
             ->where('bancos.paise_id', '1')
-            ->when($request->banco == 'sin_bancomer', function($q){
+            ->when($request->banco == 'sin_bancomer', function ($q) {
                 return $q->whereNotIn('bancos.id', [13]);
             })
             ->groupBy('contratos.id')
@@ -517,18 +521,18 @@ trait TerminalTrait
             ->where('contratos.via_serfin', '1')
             ->whereNotIn('users.convenio_id', ['455'])
             ->where('bancos.paise_id', '1')
-            ->when($request->banco == 'sin_bancomer', function($q){
+            ->when($request->banco == 'sin_bancomer', function ($q) {
                 return $q->whereNotIn('bancos.id', [13]);
             })
             ->groupBy('contratos.user_id')
-            ->when($request->cliente == 'dobles', function($q){
+            ->when($request->cliente == 'dobles', function ($q) {
                 return $q->having('num_segmentos', '>=', 2);
             })
             ->orderBy('pagos.id', 'ASC')
             // ->limit(20)
             ->get();
 
-            // dd($query);
+        // dd($query);
         return $query;
 
         /**
@@ -652,25 +656,23 @@ trait TerminalTrait
 
         if ($request->condicion_bancomer == 'solo') {
             $filtrado_serfin->where('p.segmento', $request->segmento_bancomer);
-
         }
         if ($request->condicion_bancomer == 'contenga') {
             $segs = explode(",", $request->segmento_bancomer);
 
             $filtrado_serfin->whereIn('p.segmento', $segs);
-
         }
         if ($request->condicion_bancomer == 'entre') {
             $segs = explode(",", $request->segmento_bancomer);
             $filtrado_serfin->whereBetween('p.segmento', [$segs[0], $segs[1]]);
         }
-     
+
         if ($request->condicion_bancomer == 'excep') {
             $filtrado_serfin->whereNotIn('p.segmento', [$request->segmento_bancomer]);
         }
 
         if ($request->condicion_bancomer == 'mayor') {
-            $filtrado_serfin->where('p.segmento','>=', $request->segmento_bancomer);
+            $filtrado_serfin->where('p.segmento', '>=', $request->segmento_bancomer);
         }
 
         if ($request->estatus_pago_bancomer == 'por_pagar') {
@@ -691,7 +693,5 @@ trait TerminalTrait
         $res = $filtrado_serfin->get();
 
         return $res;
-
     }
-
 }

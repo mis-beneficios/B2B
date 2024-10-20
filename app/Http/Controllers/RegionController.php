@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Pais;
 use App\Region;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class RegionController extends Controller
     public function index()
     {
         $this->authorize('view', Region::class);
-        return view('admin.regiones.index');
+        $paises = Pais::get(['id', 'title']);
+        return view('admin.regiones.index', compact('paises'));
     }
 
     /**
@@ -144,5 +146,4 @@ class RegionController extends Controller
 
         return response()->json($results);
     }
-
 }

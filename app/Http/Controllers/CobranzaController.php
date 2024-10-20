@@ -51,7 +51,7 @@ class CobranzaController extends Controller
         $this->authorize('view', Cobranza::class);
         $convenios = Convenio::select('id', 'empresa_nombre')->where('paise_id', 1)->get();
         $paises    = Pais::select('id', 'title')->get();
-        return view('admin.cobranza.terminal_ajax', compact('convenios','paises'));
+        return view('admin.cobranza.terminal_ajax', compact('convenios', 'paises'));
     }
 
     /**
@@ -64,12 +64,12 @@ class CobranzaController extends Controller
 
         // dd($request->all());
         $this->authorize('view', Cobranza::class);
-        
+
         $convenios = Convenio::select('id', 'empresa_nombre')->where('paise_id', 1)->get();
         $paises    = Pais::select('id', 'title')->get();
         // return view('admin.cobranza.terminal_ajax', compact('convenios', 'paises'));
         // return view('admin.cobranza.terminal_live');
-        
+
         $estatus = [];
 
         if ($request->pagosRechazados == true) {
@@ -89,40 +89,40 @@ class CobranzaController extends Controller
         $seg = Pago::query();
 
         if (isset($request->cobro_int)) {
-            $seg->whereHas('contrato', function($query) use ($request){
+            $seg->whereHas('contrato', function ($query) use ($request) {
                 $divisa = 'USD';
-                
+
                 return  $query->whereIn('estatus', ['viajado', 'comprado', 'Comprado'])->where('divisa', $divisa);
             });
-        }else{  
-            $seg->whereHas('contrato', function($query) use ($request){
+        } else {
+            $seg->whereHas('contrato', function ($query) use ($request) {
                 $divisa = (isset($request->cobro_int)) ? 'UDS' : 'MXN';
-                
-                $query->when($request->nomina && $request->terminal && !$request->viaserfin, function($q) use($divisa){
+
+                $query->when($request->nomina && $request->terminal && !$request->viaserfin, function ($q) use ($divisa) {
                     return  $q->where('pago_con_nomina', 1)->orwhere('via_serfin', 0)->where('divisa', $divisa);
                 });
 
-                $query->when($request->nomina && !$request->terminal && $request->viaserfin, function($q) use($divisa){
+                $query->when($request->nomina && !$request->terminal && $request->viaserfin, function ($q) use ($divisa) {
                     return  $q->where('pago_con_nomina', 1)->orWhere('via_serfin', 1)->where('divisa', $divisa);
                 });
 
-                $query->when($request->nomina && !$request->terminal && !$request->viaserfin, function($q) use($divisa){
+                $query->when($request->nomina && !$request->terminal && !$request->viaserfin, function ($q) use ($divisa) {
                     return  $q->where('pago_con_nomina', 1)->where('divisa', $divisa);
                 });
 
-                $query->when(!$request->nomina && !$request->terminal && $request->viaserfin, function($q) use($divisa){
+                $query->when(!$request->nomina && !$request->terminal && $request->viaserfin, function ($q) use ($divisa) {
                     return $q->where('via_serfin', 1)->where('sys_key', '<>', null)->where('divisa', $divisa);
                 });
 
-                $query->when(!$request->nomina && $request->terminal && !$request->viaserfin, function($q) use($divisa){
+                $query->when(!$request->nomina && $request->terminal && !$request->viaserfin, function ($q) use ($divisa) {
                     return $q->where(['pago_con_nomina' => 0, 'via_serfin' => 0])->where('divisa', $divisa);
                 });
 
-                $query->when(!$request->nomina && $request->terminal && $request->viaserfin, function($q) use($divisa){
+                $query->when(!$request->nomina && $request->terminal && $request->viaserfin, function ($q) use ($divisa) {
                     return $q->where('pago_con_nomina', 0)->where('divisa', $divisa);
-                }); 
+                });
 
-                $query->when(!$request->nomina && !$request->terminal && !$request->viaserfin, function($q) use($divisa){
+                $query->when(!$request->nomina && !$request->terminal && !$request->viaserfin, function ($q) use ($divisa) {
                     return $q->where(['pago_con_nomina' => 1, 'via_serfin' => 1])->where('divisa', $divisa);
                 });
 
@@ -135,15 +135,15 @@ class CobranzaController extends Controller
 
         //     return $query->toSql();
         // });
-        $seg->whereHas('contrato.convenio', function($query) use ($request){
+        $seg->whereHas('contrato.convenio', function ($query) use ($request) {
             $pais = $request->paise_id;
             $conv = $request->convenio_id;
-            
-            $query->when($request->paise_id != null, function($q) use ($pais){
+
+            $query->when($request->paise_id != null, function ($q) use ($pais) {
                 return $q->where('paise_id', $pais);
             });
 
-            $query->when($request->convenio_id != null, function($q) use ($conv){
+            $query->when($request->convenio_id != null, function ($q) use ($conv) {
                 return $q->whereIn('id', $conv);
             });
         });
@@ -155,10 +155,10 @@ class CobranzaController extends Controller
         // }
 
         $seg->where('cantidad', '>', 0)
-        ->whereIn('estatus', $estatus)
-        ->whereBetween('fecha_de_cobro', [$request->fecha_inicio, $request->fecha_fin]);
+            ->whereIn('estatus', $estatus)
+            ->whereBetween('fecha_de_cobro', [$request->fecha_inicio, $request->fecha_fin]);
 
-       
+
         $datos =  $seg->orderBy('segmento', 'ASC')->paginate()->appends($request->query());
 
 
@@ -268,88 +268,155 @@ class CobranzaController extends Controller
         //
     }
 
+    // public function get_data(Request $request)
+    // {
+
+    //     $segmentos_data = $this->get_data_terminal($request);
+
+    //     // dd($segmentos_data);
+
+    //     $data = array();
+    //     $sfr                 = '';
+    //     $index = 1;
+
+    //     foreach ($segmentos_data as $pago) {
+
+    //         $pagos_contrato = Pago::where('contrato_id', $pago->contrato_id)->where('cantidad' , '!=' ,0)->get();
+    //         /**
+    //          * Obtenemos la tarjeta asociada al contrato
+    //          */
+    //         if ($pago->tarjeta_id) {
+    //             $tarjeta = Tarjeta::where('id', $pago->tarjeta_id)->first();
+    //             $tarjeta_info = "<span>".$tarjeta->numeroTarjeta."</span><br><small>". $tarjeta->vence ." | ". $tarjeta->verCvv ."</small><br><small>".$tarjeta->tipo." | ".$tarjeta->r_banco->title."</small>";
+    //         }else{
+    //             $tarjeta_info = "<span> N/A </span>";
+    //         }            
+
+    //         $segmentos = '<div class="text-justify">';
+    //         foreach ($pagos_contrato as $cp) {
+    //             switch ($cp->estatus) {
+    //               case 'Pagado':
+    //                   $class = 'btn-success';
+    //                   break;
+    //               case 'Rechazado':
+    //                   $class = 'btn-danger';
+    //                   break;
+    //               default:
+    //                   $class = 'btn-inverse';
+    //                   break;
+    //             }      
+    //             $active = ($cp->id == $pago->id) ? ' active' : '';
+    //             $segmentos .= '<button class="mytooltip btn btn-xs btnsmall '.$class . $active .'" id="statusPago'.$cp->id.'"><span class="tooltip-item">'.$cp->segmento.'</span> <span class="tooltip-content clearfix"><span class="tooltip-text">'.$cp->segmento .' | '. $cp->fecha_de_cobro .' | '. number_format($cp->cantidad,2,'.','') .'</span></span></button>';
+    //         }
+    //         $segmentos .= '</div>';
+
+    //         switch ($pago->estatus) {
+    //             case 'Pagado':
+    //                 $class = 'success';
+    //                 break;
+    //             case 'Rechazado':
+    //                 $class = 'danger';
+    //                 break;
+    //             case 'Anomalias':
+    //                 $class = 'info';
+    //                 break;
+    //             default:
+    //                 $class = 'inverse';
+    //                 break;
+    //         }
+
+    //         $btn = '<button class="btn btn-success btn-xs mr-1" value="' . $pago->id . '" data-pago_id="' . $pago->id . '" data-contrato_id="' . $pago->contrato_id . '" id="btnEditarPago" type="button"><i class="fas fa-edit"></i></button>';
+    //         $btn .= '<button class="btn btn-info btn-xs mr-1" data-pago_id="' . $pago->id . '" data-tarjeta_id="' . '' . '" data-contrato_id="' . $pago->contrato_id . '" id="btnMetodoPago" data-route="' . route('contrato.show_metodo_pago', $pago->contrato_id) . '" type="button"><i class="fas fa-arrows-alt-h"></i></button>';
+
+    //         // $btn .= '<button class="btn btn-dark btn-xs" data-pago_id="' . $pago->id . '" data-tarjeta_id="' . '' . '" data-contrato_id="' . $pago->contrato_id . '" id="btnUpdate" type="button"><i class="fas fa-cog"></i></button>';
+
+
+    //         $data[] = array(
+    //             "1" => '<span class="text-capitalize"><button type="button" id="btnPago" data-pago_id="' . $pago->id . '"  data-index="' . $index . '" data-user_id="' . $pago->user_id . '"  data-contrato_id="' . $pago->contrato_id . '" class="btn btn-dark btn-xs">Segmento: ' . $pago->segmento . '</button> </span><br/><small>' . $pago->id . ' </small>',
+
+    //             "2" => '<span><a class="" href="' . route('users.show', $pago->user_id) . '" target="_blank">' . $pago->cliente . ' </a> <br>' . $pago->empresa_nombre . '</span><br>'. $segmentos,
+
+    //             "3" => '<span id="cantidadPago'.$pago->id.'">' . $pago->divisa .number_format($pago->cantidad, 2) . '</span><br/><small>De: ' . $pago->divisa . number_format($pago->precio_de_compra, 2) . ' </small>',
+
+    //             "4" => '<button class="btn btn-xs btn-' . $class . '  btnMostratPagos estatusPago' . $pago->id . '"  data-id="all"  id="estatusPago' . $pago->id . '" value="' . $pago->contrato_id . '">' . $pago->estatus . '</button><br/><small>'.$this->obtener_serfin($pago->id).' </small>',
+
+    //             "5" => '<span id="fechaCobro'.$pago->id.'">' . $pago->fecha_de_cobro . '</span><br/><small id="fechaPago'.$pago->id.'">' . $pago->fecha_de_pago . ' </small>',
+
+    //             "6" => $btn,
+
+    //             "7" => '<span><a class="" href="' . route('users.show', $pago->user_id) . '" target="_blank"> # ' . $pago->contrato_id . ' </a><br/>' . $pago->sys_key . '</span>',
+    //             "8" => $tarjeta_info,
+    //         );
+    //         $btn = '';
+    //         $index++;
+    //     }
+    //     $results = array(
+    //         "sEcho"                => 1,
+    //         "iTotalRecords"        => count($data),
+    //         "aaData"               => $data,
+    //     );
+
+    //     return response()->json($results);
+    // }
+
     public function get_data(Request $request)
     {
-
+        // Obtener todos los datos de la función optimizada get_data_terminal
         $segmentos_data = $this->get_data_terminal($request);
-
-        // dd($segmentos_data);
-
-        $data = array();
-        $sfr                 = '';
+        $data = [];
         $index = 1;
 
         foreach ($segmentos_data as $pago) {
-
-            $pagos_contrato = Pago::where('contrato_id', $pago->contrato_id)->where('cantidad' , '!=' ,0)->get();
-            /**
-             * Obtenemos la tarjeta asociada al contrato
-             */
+            // Obtener los pagos asociados al contrato
+            // dd($pago);
+            $pagos_contrato = Pago::where('contrato_id', $pago->contrato_id)->where('cantidad', '!=', 0)->get();
+            // Obtener la tarjeta asociada al contrato
             if ($pago->tarjeta_id) {
-                $tarjeta = Tarjeta::where('id', $pago->tarjeta_id)->first();
-                $tarjeta_info = "<span>".$tarjeta->numeroTarjeta."</span><br><small>". $tarjeta->vence ." | ". $tarjeta->verCvv ."</small><br><small>".$tarjeta->tipo." | ".$tarjeta->r_banco->title."</small>";
-            }else{
-                $tarjeta_info = "<span> N/A </span>";
-            }            
+                $tarjeta = Tarjeta::find($pago->tarjeta_id);
+                $tarjeta_info = "<span>{$tarjeta->numeroTarjeta}</span><br><small>{$tarjeta->vence} | {$tarjeta->verCvv}</small><br><small>{$tarjeta->tipo} | {$tarjeta->r_banco->title}</small>";
+            } else {
+                $tarjeta_info = "<span>N/A</span>";
+            }
 
+            // Construir segmentos de pagos
             $segmentos = '<div class="text-justify">';
             foreach ($pagos_contrato as $cp) {
-                switch ($cp->estatus) {
-                  case 'Pagado':
-                      $class = 'btn-success';
-                      break;
-                  case 'Rechazado':
-                      $class = 'btn-danger';
-                      break;
-                  default:
-                      $class = 'btn-inverse';
-                      break;
-                }      
+                $class = ($cp->estatus == 'Pagado') ? 'btn-success' : (($cp->estatus == 'Rechazado') ? 'btn-danger' : 'btn-inverse');
+
                 $active = ($cp->id == $pago->id) ? ' active' : '';
-                $segmentos .= '<button class="mytooltip btn btn-xs btnsmall '.$class . $active .'" id="statusPago'.$cp->id.'"><span class="tooltip-item">'.$cp->segmento.'</span> <span class="tooltip-content clearfix"><span class="tooltip-text">'.$cp->segmento .' | '. $cp->fecha_de_cobro .' | '. number_format($cp->cantidad,2,'.','') .'</span></span></button>';
+                $segmentos .= '<button class="mytooltip btn btn-xs btnsmall ' . $class . $active . '" id="statusPago' . $cp->id . '">
+                    <span class="tooltip-item">' . $cp->segmento . '</span> 
+                    <span class="tooltip-content clearfix">
+                        <span class="tooltip-text">' . $cp->segmento . ' | ' . $cp->fecha_de_cobro . ' | ' . number_format($cp->cantidad, 2, '.', '') . '</span>
+                    </span>
+                </button>';
             }
             $segmentos .= '</div>';
 
-            switch ($pago->estatus) {
-                case 'Pagado':
-                    $class = 'success';
-                    break;
-                case 'Rechazado':
-                    $class = 'danger';
-                    break;
-                case 'Anomalias':
-                    $class = 'info';
-                    break;
-                default:
-                    $class = 'inverse';
-                    break;
-            }
-            
+            // Obtener clase de estatus
+            $class = ($pago->estatus == 'Pagado') ? 'success' : (($pago->estatus == 'Rechazado') ? 'danger' : (($pago->estatus == 'Anomalias') ? 'info' : 'inverse'));
+
+            // Crear botones de acción
             $btn = '<button class="btn btn-success btn-xs mr-1" value="' . $pago->id . '" data-pago_id="' . $pago->id . '" data-contrato_id="' . $pago->contrato_id . '" id="btnEditarPago" type="button"><i class="fas fa-edit"></i></button>';
-            $btn .= '<button class="btn btn-info btn-xs mr-1" data-pago_id="' . $pago->id . '" data-tarjeta_id="' . '' . '" data-contrato_id="' . $pago->contrato_id . '" id="btnMetodoPago" data-route="' . route('contrato.show_metodo_pago', $pago->contrato_id) . '" type="button"><i class="fas fa-arrows-alt-h"></i></button>';
+            $btn .= '<button class="btn btn-info btn-xs mr-1" data-pago_id="' . $pago->id . '" data-contrato_id="' . $pago->contrato_id . '" id="btnMetodoPago" data-route="' . route('contrato.show_metodo_pago', $pago->contrato_id) . '" type="button"><i class="fas fa-arrows-alt-h"></i></button>';
 
-            // $btn .= '<button class="btn btn-dark btn-xs" data-pago_id="' . $pago->id . '" data-tarjeta_id="' . '' . '" data-contrato_id="' . $pago->contrato_id . '" id="btnUpdate" type="button"><i class="fas fa-cog"></i></button>';
-
-
+            // Construir la fila de datos
             $data[] = array(
-                "1" => '<span class="text-capitalize"><button type="button" id="btnPago" data-pago_id="' . $pago->id . '"  data-index="' . $index . '" data-user_id="' . $pago->user_id . '"  data-contrato_id="' . $pago->contrato_id . '" class="btn btn-dark btn-xs">Segmento: ' . $pago->segmento . '</button> </span><br/><small>' . $pago->id . ' </small>',
-
-                "2" => '<span><a class="" href="' . route('users.show', $pago->user_id) . '" target="_blank">' . $pago->cliente . ' </a> <br>' . $pago->empresa_nombre . '</span><br>'. $segmentos,
-                
-                "3" => '<span id="cantidadPago'.$pago->id.'">' . $pago->divisa .number_format($pago->cantidad, 2) . '</span><br/><small>De: ' . $pago->divisa . number_format($pago->precio_de_compra, 2) . ' </small>',
-
-                "4" => '<button class="btn btn-xs btn-' . $class . '  btnMostratPagos estatusPago' . $pago->id . '"  data-id="all"  id="estatusPago' . $pago->id . '" value="' . $pago->contrato_id . '">' . $pago->estatus . '</button><br/><small>'.$this->obtener_serfin($pago->id).' </small>',
-
-                "5" => '<span id="fechaCobro'.$pago->id.'">' . $pago->fecha_de_cobro . '</span><br/><small id="fechaPago'.$pago->id.'">' . $pago->fecha_de_pago . ' </small>',
-                
+                "1" => '<span class="text-capitalize"><button type="button" id="btnPago" data-pago_id="' . $pago->id . '"  data-index="' . $index . '" data-user_id="' . $pago->user_id . '"  data-contrato_id="' . $pago->contrato_id . '" class="btn btn-dark btn-xs">Segmento: ' . $pago->segmento . '</button></span><br/><small>' . $pago->id . ' </small>',
+                "2" => '<span><a href="' . route('users.show', $pago->user_id) . '" target="_blank">' . $pago->cliente . ' </a> <br>' . $pago->empresa_nombre . '</span><br>' . $segmentos,
+                "3" => '<span id="cantidadPago' . $pago->id . '">' . $pago->divisa . number_format($pago->cantidad, 2) . '</span><br/><small>De: ' . $pago->divisa . number_format($pago->precio_de_compra, 2) . ' </small>',
+                "4" => '<button class="btn btn-xs btn-' . $class . ' btnMostratPagos estatusPago' . $pago->id . '" data-id="all" id="estatusPago' . $pago->id . '" value="' . $pago->contrato_id . '">' . $pago->estatus . '</button><br/><small>' . $this->obtener_serfin($pago->id) . ' </small>',
+                "5" => '<span id="fechaCobro' . $pago->id . '">' . $pago->fecha_de_cobro . '</span><br/><small id="fechaPago' . $pago->id . '">' . $pago->fecha_de_pago . ' </small>',
                 "6" => $btn,
-
-                "7" => '<span><a class="" href="' . route('users.show', $pago->user_id) . '" target="_blank"> # ' . $pago->contrato_id . ' </a><br/>' . $pago->sys_key . '</span>',
+                "7" => '<span><a href="' . route('users.show', $pago->user_id) . '" target="_blank"> # ' . $pago->contrato_id . ' </a><br/>' . $pago->sys_key . '</span>',
                 "8" => $tarjeta_info,
             );
-            $btn = '';
+
+            // dd($data);
             $index++;
         }
+
+        // Preparar la respuesta JSON
         $results = array(
             "sEcho"                => 1,
             "iTotalRecords"        => count($data),
@@ -434,7 +501,7 @@ class CobranzaController extends Controller
 
         if ($pago->save()) {
             // $this->card->editar_estatus($request->tarjeta_id, $request->motivo_del_rechazo);
-            
+
             $tarjeta = Tarjeta::findOrFail($request->tarjeta_id);
             if ($tarjeta) {
                 $tarjeta->estatus  = $request->motivo_del_rechazo;
@@ -541,7 +608,7 @@ class CobranzaController extends Controller
                     $opt = $cadena . $consecutivo;
 
                     $log = $this->generar_log($opt);
-                    
+
                     $new_syskey = Contrato::where('id', $contrato->id)
                         ->update([
                             'sys_key' => $opt,
@@ -553,7 +620,6 @@ class CobranzaController extends Controller
             $via_serfin_int->data = $consecutivo;
             $via_serfin_int->save();
             $data['success'] = true;
-
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();
@@ -573,7 +639,6 @@ class CobranzaController extends Controller
         $log .= "* * * \n\n";
 
         return $log;
-
     }
 
     public function filtrado_cobranza()
@@ -604,7 +669,6 @@ class CobranzaController extends Controller
             $excel        = Excel::store(new SinSegmento($datos), $data['name'], 'filtrados');
             $data['url']  = route('cobranza.download_sin_segmento', $data['name']);
             $data['cont'] = count($datos);
-
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();
@@ -635,7 +699,7 @@ class CobranzaController extends Controller
             $data['errors']  = $e->getMessage();
         }
         return response()->json($data);
-    }    
+    }
 
 
     /**
@@ -700,11 +764,9 @@ class CobranzaController extends Controller
             } else {
                 $data['success'] = false;
             }
-
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();
-
         }
         return response()->json($data);
     }
@@ -727,7 +789,6 @@ class CobranzaController extends Controller
             } else {
                 $data['success'] = false;
             }
-
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();

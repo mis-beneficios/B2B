@@ -186,15 +186,15 @@
                 </div>
             </nav>
         </header>
-        @if (Auth::user()->username == 'dsanchez@pacifictravels.mx')
-            <div class="">
-                <button
-                    class="right-side-toggle waves-effect waves-light btn-success btn btn-circle btn-sm pull-right m-l-10">
-                    <i class="ti-settings text-white">
-                    </i>
-                </button>
-            </div>
-        @endif
+        {{-- @if (Auth::user()->username == 'dsanchez@pacifictravels.mx') --}}
+        <div class="">
+            <button
+                class="right-side-toggle waves-effect waves-light btn-success btn btn-circle btn-sm pull-right m-l-10">
+                <i class="ti-settings text-white">
+                </i>
+            </button>
+        </div>
+        {{-- @endif --}}
         <aside class="left-sidebar">
             <div class="scroll-sidebar">
                 @include('layouts.admin.menus.' . Auth::user()->role)

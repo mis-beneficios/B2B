@@ -57,142 +57,141 @@ class BeneficiosServiceProvider extends ServiceProvider
         /**
          * Observadores
          */
-       // Reservacion::observe(ReservacionObserver::class);
+        // Reservacion::observe(ReservacionObserver::class);
 
         /**
          * Cargar variable globales en session para optimizar la carga de datos
          */
-       // session(['unlock_cards' => false]);
+        // session(['unlock_cards' => false]);
 
         //$this->register_mx();
 
         //view()->composer('*', function ($view) {
-            $register         = self::register_mx();
-            $bancos_mx        = self::bancos_mx();
-            $estancias_global = self::estancias();
-            $regiones         = self::regiones();
-            $destinos         = self::destinos();
-            $paises           = self::paises();
-            $convenios_mx     = self::convenios_mx();
+        $register         = self::register_mx();
+        $bancos_mx        = self::bancos_mx();
+        $estancias_global = self::estancias();
+        $regiones         = self::regiones();
+        $destinos         = self::destinos();
+        $paises           = self::paises();
+        $convenios_mx     = self::convenios_mx();
 
-            // $notificaciones   = Notificacion::where('estatus', 0)->get();
+        // $notificaciones   = Notificacion::where('estatus', 0)->get();
 
-            // Imagen de fondo de login
-            $config = Configuracion::where('name', 'background_image')->first();
-            $back_image = ($config != null && $config->data != null) ? $config->data : 'images/fondos/back2.jpg';
-            
-            // Imagen de preload
-            $config_img = Configuracion::where('name', 'preload_image')->first();
-            $preload_image =  ($config_img != null && $config_img->data != null) ? $config_img->data : 'images/icono01.png';
-           
+        // Imagen de fondo de login
+        $config = Configuracion::where('name', 'background_image')->first();
+        $back_image = ($config != null && $config->data != null) ? $config->data : 'images/fondos/back2.jpg';
 
-            // Calendario de temporadas
-            $config_calendario = Configuracion::where('name', 'calendario_temporadas')->first();
-            $cal_temp = ($config_calendario != null && $config_calendario->data != null) ? $config_calendario->data : 'images/calendario_beneficios_2022-2023.jpg';
-            
+        // Imagen de preload
+        $config_img = Configuracion::where('name', 'preload_image')->first();
+        $preload_image =  ($config_img != null && $config_img->data != null) ? $config_img->data : 'images/icono01.png';
 
-            /**
-             * carga de datos estatitcs para el funcionamiento de algunas funciones
-             */
 
-            $roles = array(
-                'admin'        => 'Administrador',
-                'client'       => 'Cliente',
-                'recepcionist' => 'Recepcionista',
-                'supervisor'   => 'Supervisor de Ventas',
-                'sales'        => 'Ejecutivo de Ventas',
-                'collector'    => 'Ejecutivo de Cobranza',
-                'reserver'     => 'Ejecutivo de Reservaciones',
-                'conveniant'   => 'Generador de Convenios',
-                'quality'      => 'Control de Calidad',
-                'control'      => 'Control de Ventas',
+        // Calendario de temporadas
+        $config_calendario = Configuracion::where('name', 'calendario_temporadas')->first();
+        $cal_temp = ($config_calendario != null && $config_calendario->data != null) ? $config_calendario->data : 'images/calendario_beneficios_2022-2023.jpg';
 
-            );
 
-            $tipo_pago = array(
-                'semanal'           => 'SEMANAL: Un día por semana',
-                'catorcenal'        => 'CATORCENAL: Un día por semana intercalada',
-                'quincenal_preciso' => 'QUINCENAL PRECISO',
-                'quincenal_clasico' => ' QUINCENAL CLÁSICO: Cada siguiente dia 15 o último del mes',
-                'mensual'           => '   MENSUAL: Cada cierto día del mes',
-            );
+        /**
+         * carga de datos estatitcs para el funcionamiento de algunas funciones
+         */
 
-            $como_se_entero = array(
-                // 1  => 'redes sociales',
-                // 2  => 'correo electronico',
-                3  => 'Búsqueda WEb',
-                4  => 'Flyer promocional',
-                5  => 'Recomendación',
-                6  => 'Otros',
-                7  => 'Llamada telemarketing',
-                8  => 'Venta directa',
-                // 9  => 'whatsapp',
-                10 => 'Gopacific',
-                11 => 'Transporte publico',
-                12 => 'IMSS - CLM',
-                13 => 'Redes Sociales',
-                20 => 'Amando a México',
-            );
+        $roles = array(
+            'admin'        => 'Administrador',
+            'client'       => 'Cliente',
+            'recepcionist' => 'Recepcionista',
+            'supervisor'   => 'Supervisor de Ventas',
+            'sales'        => 'Ejecutivo de Ventas',
+            'collector'    => 'Ejecutivo de Cobranza',
+            'reserver'     => 'Ejecutivo de Reservaciones',
+            'conveniant'   => 'Generador de Convenios',
+            'quality'      => 'Control de Calidad',
+            'control'      => 'Control de Ventas',
+        );
 
-            $cuotas = array(
-                1  => '1',
-                12 => '12',
-                24 => '24',
-                48 => '48',
-                36 => '36',
-                72 => '72',
-            );
+        $tipo_pago = array(
+            'semanal'           => 'SEMANAL: Un día por semana',
+            'catorcenal'        => 'CATORCENAL: Un día por semana intercalada',
+            'quincenal_preciso' => 'QUINCENAL PRECISO',
+            'quincenal_clasico' => ' QUINCENAL CLÁSICO: Cada siguiente dia 15 o último del mes',
+            'mensual'           => '   MENSUAL: Cada cierto día del mes',
+        );
 
-            $divisas = array(
-                'MXN' => 'MXN',
-                'USD' => 'USD',
-            );
+        $como_se_entero = array(
+            // 1  => 'redes sociales',
+            // 2  => 'correo electronico',
+            3  => 'Búsqueda WEb',
+            4  => 'Flyer promocional',
+            5  => 'Recomendación',
+            6  => 'Otros',
+            7  => 'Llamada telemarketing',
+            8  => 'Venta directa',
+            // 9  => 'whatsapp',
+            10 => 'Gopacific',
+            11 => 'Transporte publico',
+            12 => 'IMSS - CLM',
+            13 => 'Redes Sociales',
+            20 => 'Amando a México',
+        );
 
-            $estatus_tarjetas = array(
-                'Cancelada'        => 'Cancelada',
-                'No Aprobada'      => 'No Aprobada',
-                'Confirmada'       => 'Confirmada',
-                'Extraviada'       => 'Extraviada',
-                'Denegada'         => 'Denegada',
-                'Al Dia'           => 'Al Día',
-                'Rechazada'        => 'Rechazada',
-                'Inexistente'      => 'Inexistente',
-                'Erronea'          => 'Errónea',
-                'Retener'          => 'Retener',
-                'Emisor Invalido'  => 'Emisor Invalido',
-                'Bloqueada'        => 'Bloqueada',
-                'Tarjeta Vencida'  => 'Tarjeta Vencida',
-                'Tarjeta Invalida' => 'Tarjeta Invalida',
-                'Declinada'        => 'Declinada',
-            );
+        $cuotas = array(
+            1  => '1',
+            12 => '12',
+            24 => '24',
+            48 => '48',
+            36 => '36',
+            72 => '72',
+        );
 
-            $estatus_pagos = array(
-                'Por Pagar'  => 'Por Pagar',
-                'Pagado'     => 'Pagado',
-                'Rechazado'  => 'Rechazado',
-                'Cancelado'  => 'Cancelado',
-                'Bonificado' => 'Bonificado',
-                'Anomalia'   => 'Anomalía',
-                'pagado_fdt' => 'Pago fuera de tiempo',
-                'Simulador'  => 'Simulador',
-            );
+        $divisas = array(
+            'MXN' => 'MXN',
+            'USD' => 'USD',
+        );
 
-            $estatus_concal = array(
-                'enviada'       => 'Enviada',
-                'por_cerrar'    => 'Por cerrar',
-                'no_contactado' => 'No contactado',
-                'cerrado'       => 'Cerrado',
-                'rechazada'     => 'Rechazada',
-                'seguimiento'   => 'Seguimiento',
-                'retomar'       => 'Retomar',
-                'interesado'    => 'Interesado',
-                'ellos_llaman'  => 'Ellos llaman',
-            );
+        $estatus_tarjetas = array(
+            'Cancelada'        => 'Cancelada',
+            'No Aprobada'      => 'No Aprobada',
+            'Confirmada'       => 'Confirmada',
+            'Extraviada'       => 'Extraviada',
+            'Denegada'         => 'Denegada',
+            'Al Dia'           => 'Al Día',
+            'Rechazada'        => 'Rechazada',
+            'Inexistente'      => 'Inexistente',
+            'Erronea'          => 'Errónea',
+            'Retener'          => 'Retener',
+            'Emisor Invalido'  => 'Emisor Invalido',
+            'Bloqueada'        => 'Bloqueada',
+            'Tarjeta Vencida'  => 'Tarjeta Vencida',
+            'Tarjeta Invalida' => 'Tarjeta Invalida',
+            'Declinada'        => 'Declinada',
+        );
 
-            /**
-             * Reservaciones
-             */
-            /*$tipo_reservacion = array(
+        $estatus_pagos = array(
+            'Por Pagar'  => 'Por Pagar',
+            'Pagado'     => 'Pagado',
+            'Rechazado'  => 'Rechazado',
+            'Cancelado'  => 'Cancelado',
+            'Bonificado' => 'Bonificado',
+            'Anomalia'   => 'Anomalía',
+            'pagado_fdt' => 'Pago fuera de tiempo',
+            'Simulador'  => 'Simulador',
+        );
+
+        $estatus_concal = array(
+            'enviada'       => 'Enviada',
+            'por_cerrar'    => 'Por cerrar',
+            'no_contactado' => 'No contactado',
+            'cerrado'       => 'Cerrado',
+            'rechazada'     => 'Rechazada',
+            'seguimiento'   => 'Seguimiento',
+            'retomar'       => 'Retomar',
+            'interesado'    => 'Interesado',
+            'ellos_llaman'  => 'Ellos llaman',
+        );
+
+        /**
+         * Reservaciones
+         */
+        /*$tipo_reservacion = array(
                 'venta'          => 'Venta',
                 'referido'       => 'Cortesía referidos',
                 'campana'        => 'Cortesía campaña',
@@ -245,35 +244,35 @@ class BeneficiosServiceProvider extends ServiceProvider
             */
 
 
-            session(['config'=>[
-                'estancias_global'     => $estancias_global->toArray(),
-                'bancos_mx'            => $bancos_mx->toArray(),
-                'register'             => $register,
-                'roles'                => $roles,
-                'como_se_entero'       => $como_se_entero,
-                'cuotas'               => $cuotas,
-                'divisas'              => $divisas,
-                'estatus_tarjetas'     => $estatus_tarjetas,
-                'estatus_pagos'        => $estatus_pagos,
-                'estatus_concal'       => $estatus_concal,
-                'destinos'             => $destinos,
-                'regiones'             => $regiones,
-                'paises'               => $paises->toArray(),
-                //'tipo_reservacion'     => $tipo_reservacion,
-                //'estatus_reservacion'  => $estatus_reservacion,
-                //'estatus_pago'         => $estatus_pago,
-                //'garantia_reservacion' => $garantia_reservacion,
-                //'filtros_fecha'        => $filtros_fecha,
-                //'tipo_garantia'        => $tipo_garantia,
-                'convenios'            => $convenios_mx->toArray(),
-                'tipo_pago_g'          => $tipo_pago,
-                'back_image'           => $back_image,
-                'preload_image'        => $preload_image,
-                'cal_temp'             => $cal_temp,
-                'tipo_estancia'        => $tipo_estancia,
-                // 'notificaciones'       => $notificaciones,
-            ]]);
-       // });
+        session(['config' => [
+            'estancias_global'     => $estancias_global->toArray(),
+            'bancos_mx'            => $bancos_mx->toArray(),
+            'register'             => $register,
+            'roles'                => $roles,
+            'como_se_entero'       => $como_se_entero,
+            'cuotas'               => $cuotas,
+            'divisas'              => $divisas,
+            'estatus_tarjetas'     => $estatus_tarjetas,
+            'estatus_pagos'        => $estatus_pagos,
+            'estatus_concal'       => $estatus_concal,
+            'destinos'             => $destinos,
+            'regiones'             => $regiones,
+            'paises'               => $paises->toArray(),
+            //'tipo_reservacion'     => $tipo_reservacion,
+            //'estatus_reservacion'  => $estatus_reservacion,
+            //'estatus_pago'         => $estatus_pago,
+            //'garantia_reservacion' => $garantia_reservacion,
+            //'filtros_fecha'        => $filtros_fecha,
+            //'tipo_garantia'        => $tipo_garantia,
+            'convenios'            => $convenios_mx->toArray(),
+            'tipo_pago_g'          => $tipo_pago,
+            'back_image'           => $back_image,
+            'preload_image'        => $preload_image,
+            'cal_temp'             => $cal_temp,
+            'tipo_estancia'        => $tipo_estancia,
+            // 'notificaciones'       => $notificaciones,
+        ]]);
+        // });
     }
 
     /**
@@ -286,7 +285,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function estancias()
     {
         //return Cache::remember('estancias_global', self::EXPTIME, function () {
-            return  Estancia::where(['habilitada' => 1, 'estancia_paise_id' => env('APP_PAIS_ID', 1)])->select('id', 'title', 'precio', 'habilitada', 'descripcion', 'noches', 'adultos', 'ninos', 'divisa', 'cuotas')->orderBy('id', 'DESC')->get();
+        return  Estancia::where(['habilitada' => 1, 'estancia_paise_id' => env('APP_PAIS_ID', 1)])->select('id', 'title', 'precio', 'habilitada', 'descripcion', 'noches', 'adultos', 'ninos', 'divisa', 'cuotas')->orderBy('id', 'DESC')->get();
         //});
     }
 
@@ -322,7 +321,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function bancos_mx()
     {
         //return Cache::remember('bancos_mx', self::EXPTIME, function () {
-            return Banco::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'title']);
+        return Banco::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'title']);
         //});
     }
 
@@ -336,7 +335,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function convenios_mx()
     {
         //return Cache::remember('convenios_mx', self::EXPTIME, function () {
-            return Convenio::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'empresa_nombre', 'llave']);
+        return Convenio::where('paise_id', env('APP_PAIS_ID'))->get(['id', 'empresa_nombre', 'llave']);
         //});
     }
 
@@ -350,7 +349,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function destinos()
     {
         //return Cache::remember('destinos', self::EXPTIME, function () {
-            return Destino::pluck('id', 'titulo');
+        return Destino::pluck('id', 'titulo');
         //});
     }
     /**
@@ -363,7 +362,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     private static function regiones()
     {
         //return Cache::remember('regiones', self::EXPTIME, function () {
-            return Region::pluck('id', 'title');
+        return Region::pluck('id', 'title');
         //});
     }
 
@@ -378,7 +377,7 @@ class BeneficiosServiceProvider extends ServiceProvider
     {
 
         //return Cache::remember('paises', self::EXPTIME, function () {
-            return Pais::get(['id', 'title']);
+        return Pais::get(['id', 'title']);
         //});
     }
 

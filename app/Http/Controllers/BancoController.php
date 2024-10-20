@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use App\Pais;
 use App\Banco;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Auth;
 
 class BancoController extends Controller
 {
@@ -18,7 +19,8 @@ class BancoController extends Controller
     {
 
         $this->authorize('view', Auth::user());
-        return view('admin.bancos.index');
+        $paises = Pais::get(['id', 'title']);
+        return view('admin.bancos.index', compact('paises'));
     }
 
     /**
@@ -43,7 +45,7 @@ class BancoController extends Controller
         $banco                        = new Banco;
         $data['success']              = false;
         $banco->title                 = $request->title;
-        $banco->clave                 = ($request->clave) ? $request->clave : '000' ;
+        $banco->clave                 = ($request->clave) ? $request->clave : '000';
         $banco->ignorar_en_via_serfin = $request->ignorar_en_via_serfin;
         $banco->paise_id              = $request->paise_id;
         $banco->created               = Carbon::now();
