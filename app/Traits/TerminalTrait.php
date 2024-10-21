@@ -96,17 +96,17 @@ trait TerminalTrait
         $data->whereBetween('p.fecha_de_cobro', [$request->fecha_inicio, $request->fecha_fin]);
 
         // Obtener los resultados como colección
-        $dataCollection = $data->get();
+        return $data->get();
 
         // Implementar paginación manual
-        $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Página actual
-        $perPage = 100; // Número de elementos por página
-        $currentItems = $dataCollection->slice(($currentPage - 1) * $perPage, $perPage)->values(); // Slice de la colección
-        $paginatedData = new LengthAwarePaginator($currentItems, $dataCollection->count(), $perPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath(),
-            'query' => $request->query(), // Para mantener los parámetros de la URL
-        ]);
-        return $paginatedData;
+        // $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Página actual
+        // $perPage = 100; // Número de elementos por página
+        // $currentItems = $dataCollection->slice(($currentPage - 1) * $perPage, $perPage)->values(); // Slice de la colección
+        // $paginatedData = new LengthAwarePaginator($currentItems, $dataCollection->count(), $perPage, $currentPage, [
+        //     'path' => LengthAwarePaginator::resolveCurrentPath(),
+        //     'query' => $request->query(), // Para mantener los parámetros de la URL
+        // ]);
+        // return $paginatedData;
 
         // $res = $data->limit(10)->get();
 
