@@ -107,32 +107,7 @@ class BeneficiosServiceProvider extends ServiceProvider
             'quality'      => 'Control de Calidad',
             'control'      => 'Control de Ventas',
         );
-            /*$como_se_entero = array(
-                // 1  => 'redes sociales',
-                // 2  => 'correo electronico',
-                3  => 'Búsqueda WEb',
-                4  => 'Flyer promocional',
-                5  => 'Recomendación',
-                6  => 'Otros',
-                7  => 'Llamada telemarketing',
-                8  => 'Venta directa',
-                // 9  => 'whatsapp',
-                10 => 'Gopacific',
-                11 => 'Transporte publico',
-                12 => 'IMSS - CLM',
-                13 => 'Redes Sociales',
-                20 => 'Amando a México',
-            );*/
-
-        $tipo_pago = array(
-            'semanal'           => 'SEMANAL: Un día por semana',
-            'catorcenal'        => 'CATORCENAL: Un día por semana intercalada',
-            'quincenal_preciso' => 'QUINCENAL PRECISO',
-            'quincenal_clasico' => ' QUINCENAL CLÁSICO: Cada siguiente dia 15 o último del mes',
-            'mensual'           => '   MENSUAL: Cada cierto día del mes',
-        );
-
-        $como_se_entero = array(
+        /*$como_se_entero = array(
             // 1  => 'redes sociales',
             // 2  => 'correo electronico',
             3  => 'Búsqueda WEb',
@@ -147,7 +122,16 @@ class BeneficiosServiceProvider extends ServiceProvider
             12 => 'IMSS - CLM',
             13 => 'Redes Sociales',
             20 => 'Amando a México',
+        );*/
+
+        $tipo_pago = array(
+            'semanal'           => 'SEMANAL: Un día por semana',
+            'catorcenal'        => 'CATORCENAL: Un día por semana intercalada',
+            'quincenal_preciso' => 'QUINCENAL PRECISO',
+            'quincenal_clasico' => ' QUINCENAL CLÁSICO: Cada siguiente dia 15 o último del mes',
+            'mensual'           => '   MENSUAL: Cada cierto día del mes',
         );
+
 
         $cuotas = array(
             1  => '1',
