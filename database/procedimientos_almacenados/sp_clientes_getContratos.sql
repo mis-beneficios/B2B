@@ -69,13 +69,13 @@ BEGIN
     END AS color_estatus,
     IF(I.id IS NOT NULL,1,0) AS estatus_calidad,COUNT(CR.id ),NULL
     FROM contratos C 
-    JOIN pagos P ON C.id=P.contrato_id
+    LEFT JOIN pagos P ON C.id=P.contrato_id
     LEFT JOIN users U2 ON C.user_id=U2.id -- CLIENTE
     LEFT JOIN padres PP ON C.padre_id=PP.id
     LEFT JOIN users U ON PP.user_id=U.id -- USUARIO DE SISTEMA
     LEFT JOIN contratos_reservaciones CR ON C.id=CR.contrato_id
     LEFT JOIN imagenes I ON I.model_id=C.id
-    WHERE C.user_id=p_id_usuario AND P.cantidad!=0 -- AND C.id=14149
+    WHERE C.user_id=p_id_usuario -- AND P.cantidad!=0 
     GROUP BY C.id;
 
     UPDATE tmp_contratos_usuario A

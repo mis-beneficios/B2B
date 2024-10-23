@@ -9,15 +9,9 @@ namespace App\Http\Controllers;
 use App\Actividad;
 use App\ActualizarSerfin;
 use App\Comision;
-use App\Concal;
-use App\Contrato;
-use App\Convenio;
+use App\{Concal,Contrato,Convenio};
 use App\Exports\ExportVentas;
-use App\Padre;
-use App\Pago;
-use App\Pais;
-use App\Salesgroup;
-use App\User;
+use App\{Padre,Pago,Pais,Salesgroup,User};
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -525,8 +519,21 @@ class HomeController extends Controller
         $convenios = Convenio::where('paise_id', env('APP_PAIS_ID', 1))->get(['empresa_nombre', 'id']);
         $equipos   = Salesgroup::all();
         $paises    = Pais::all();
+        $como_se_entero = array(
+            3  => 'Búsqueda WEb',
+            4  => 'Flyer promocional',
+            5  => 'Recomendación',
+            6  => 'Otros',
+            7  => 'Llamada telemarketing',
+            8  => 'Venta directa',
+            10 => 'Gopacific',
+            11 => 'Transporte publico',
+            12 => 'IMSS - CLM',
+            13 => 'Redes Sociales',
+            20 => 'Amando a México',
+        );
         // dd($convenios);
-        return view('admin.elementos.views.ventas', compact('convenios', 'equipos', 'paises'));
+        return view('admin.elementos.views.ventas', compact('convenios', 'equipos', 'paises','como_se_entero'));
     }
 
     /**
@@ -538,44 +545,51 @@ class HomeController extends Controller
      */
     public function filtrarVentas(Request $request)
     {
-        $total_ventas = $this->getDataFiltrado($request);
-        // dd($total_ventas);
-        $data = array();
-        $i    = 1;
-        $btn  = '';
+        $p_info = json_encode($request->all());
+        //$p_info = json_encode(['fecha_inicial'=>'2024-10-21','fecha_final'=>'2024-10-23']);
+        $total_ventas = (new Contrato)->sp_ventas_filtradoContratos($p_info);
+        // Log::debug('Contratos ::'.print_r($total_ventas,1));
+        // Log::debug('request ::'.print_r($p_info,1));
+        // $ventas   = $this->getDataFiltrado($request);
 
-        foreach ($total_ventas as $venta) {
-            if ($venta->pagos_realizados != 0) {
-                $colorPagos = 'info';
-            } else {
-                $colorPagos = 'danger';
+        if($total_ventas['success']==1){
+           
+            $data = array();
+            $i    = 1;
+            $btn  = '';
+
+            foreach ($total_ventas['data'] as $venta) {
+                $colorPagos = ($venta['pagos_realizados'] != 0) ? 'info': 'danger';
+                
+                $data[] = array(
+                    "0"  => '<a class="btn btn-dark btn-xs" href="' . route('users.show', $venta['user_id']) . '" role="button">' . $venta['id'] . '</a>',
+                    //"1"  => ($venta->cliente) ? $venta->cliente->fullName : 'N/A',
+                    "1"  => $venta['cliente'],
+                    "2"  => $venta['paquete'],
+                    "3"  => '<span class="label" style="background: ' . $venta['color_estatus'] . '">' . $venta['estatus'] . '</span>',
+                    "4"  => $venta['vendedor'],
+                    //"5"  => ($venta->padre->vendedor->equipo) ? $venta->padre->vendedor->equipo->title : 'Sin registro',
+                    "5"  =>  '',
+                    "6"  => '<span class="label label-info">' . $venta['cuotas_pagos'] . '</span>',
+                    "7"  => '<span class="label label-' . $colorPagos . '">' . $venta['pagos_realizados'] . '</span>',
+                    "8"  => Carbon::create($venta['created'])->diffForHumans(),
+                    "9"  => $venta['empresa_nombre'],
+                    "10" => $venta['tipo_llamada'],
+                    "11" => $venta['como_se_entero']
+                );
+                $btn = '';
             }
 
-            $data[] = array(
-                "0"  => '<a class="btn btn-dark btn-xs" href="' . route('users.show', $venta->user_id) . '" role="button">' . $venta->id . '</a>',
-                "1"  => ($venta->cliente) ? $venta->cliente->fullName : 'N/A',
-                "2"  => $venta->paquete,
-                "3"  => '<span class="label" style="background: ' . $venta->color_estatus() . '">' . $venta->estatus . '</span>',
-                "4"  => $venta->padre->vendedor->fullName,
-                "5"  => ($venta->padre->vendedor->equipo) ? $venta->padre->vendedor->equipo->title : 'Sin registro',
-                "6"  => '<span class="label label-info">' . $venta->cuotas_pagos . '</span>',
-                "7"  => '<span class="label label-' . $colorPagos . '">' . $venta->pagos_realizados . '</span>',
-                "8"  => $venta->diffForhumans(),
-                "9"  => $venta->convenio->empresa_nombre,
-                "10" => $venta->tipo_llamada,
-                "11" => $venta->ComoSeEntero,
+            //DEVUELVE LOS DATOS EN UN JSON
+            $results = array(
+                "sEcho"                => 1,
+                "iTotalRecords"        => count($data),
+                "iTotalDisplayRecords" => count($data),
+                "aaData"               => $data,
             );
-            $btn = '';
-        }
-
-        //DEVUELVE LOS DATOS EN UN JSON
-        $results = array(
-            "sEcho"                => 1,
-            "iTotalRecords"        => count($data),
-            "iTotalDisplayRecords" => count($data),
-            "aaData"               => $data,
-        );
-        return response()->json($results);
+            return response()->json($results);
+        } 
+    
     }
 
     /**
@@ -588,20 +602,21 @@ class HomeController extends Controller
     public function exportFiltrado(Request $request)
     {
         try {
-            $ventas          = $this->getDataFiltrado($request);
+            $p_info = json_encode($request->all());
+            $total_ventas = (new Contrato)->sp_ventas_filtradoContratos($p_info);
+            //$ventas          = $this->getDataFiltrado($request);
             $data['name']    = 'Ventas-' . str_replace(' ', '-', Carbon::now()) . '.xlsx';
             $data['success'] = true;
-            $excel           = Excel::store(new ExportVentas($ventas), $data['name'], 'filtrados');
+            $excel           = Excel::store(new ExportVentas($total_ventas['data']), $data['name'], 'filtrados');
             $data['url']     = route('ventas.download', $data['name']);
+            //return Excel::download(new ExportVentas($total_ventas['data']), $data['name']);
 
         } catch (\Exception $e) {
             $data['success'] = false;
             $data['errors']  = $e->getMessage();
 
         }
-
         return response()->json($data);
-
     }
 
     /**

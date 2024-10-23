@@ -12,7 +12,7 @@ BEGIN
     BEGIN 
 		GET DIAGNOSTICS CONDITION 1 @sqlstate=RETURNED_SQLSTATE,@errno=MYSQL_ERRNO, @text=MESSAGE_TEXT;
         SET success=-1;
-		SET message='Lo sentimos, ha ocurrido un error al ejecutar sp_client_resumenSaldos';
+		SET message='Lo sentimos, ha ocurrido un error al ejecutar sp_configuracion_sistema';
 		SET log=CONCAT(log," ERROR ", @errno, " (", @sqlstate, "): ", @text);
     END;
 

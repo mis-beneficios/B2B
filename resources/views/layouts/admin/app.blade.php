@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="Sistema administrativo Beneficios Vacacionales" />
     <meta content="{{ csrf_token() }}" name="csrf-token" />
-    <link href="{{ session('config.preload_image') }} " rel="icon" sizes="16x16" type="image/png" />
+    <link href="{{ asset('images/preload_image.png') }} " rel="icon" sizes="16x16" type="image/png" />
     <title>
         Bienvenido {{ env('APP_NAME', 'Mis Beneficios Vacacionales') }}
     </title>
@@ -29,7 +29,7 @@
     <div class="overlay" id="overlay" style="display: none;">
         <div class="overlay__inner">
             <div class="overlay__content">
-                <img src="{{ session('config.preload_image') }}" style="width: 280px;" />
+                <img src="{{ asset('images/preload_image.png') }}" style="width: 280px;" />
             </div>
         </div>
     </div>
@@ -280,20 +280,8 @@
 
             <footer class="footer" style="width: 100%">
                 <p class="footer-text pull-left m-0">
-                    Copyright © 2022cTodos los Derechos Reservados :: <b> {{ env('APP_NAME') }}</b> v3.4
+                    Copyright © 2022 Todos los Derechos Reservados :: <b> {{ env('APP_NAME') }}</b> v3.4
                 </p>
-                <b class="pull-right hidden-xs-down hidden-sm-down hidden-md-down">
-                    Design & Development by:
-                    @if (Auth::user()->role != 'client')
-                        <a href="#">
-                            Isw. Diego Enrique Sanchez
-                        </a>
-                    @else
-                        <a href="#">
-                            Isw. Diego Enrique Sanchez
-                        </a>
-                    @endif
-                </b>
             </footer>
         </div>
     </div>

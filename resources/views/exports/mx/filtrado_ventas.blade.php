@@ -44,40 +44,40 @@
             @foreach ($ventas as $venta)
             <tr>
                 <td>
-                    {{ $venta->id }}
+                    {{ $venta['id'] }}
                 </td>
                 <td>
-                    {{ $venta->cliente->fullName }}
+                    {{ $venta['cliente'] }}
                 </td>
                 <td>
-                    {{ $venta->paquete }}
+                    {{ $venta['paquete'] }}
                 </td>
                 <td>
-                    {{ $venta->estatus }}
+                    {{ $venta['estatus'] }}
                 </td>
                 <td>
-                    {{ $venta->padre->vendedor->fullName }}
+                    {{ $venta['vendedor'] }}
                 </td>
                 <td>
-                    {{ ($venta->padre->vendedor->equipo) ? $venta->padre->vendedor->equipo->title : 'Sin registro'}}
+                    ''
                 </td>
                 <td>
-                    {{ $venta->cuotas_pagos }}
+                    {{ $venta['cuotas_pagos'] }}
                 </td>
                 <td>
-                    {{ $venta->pagos_realizados }}
+                    {{ $venta['pagos_realizados'] }}
                 </td>
                 <td>
-                    {{ $venta->convenio->empresa_nombre }}
+                    {{ $venta['empresa_nombre'] }}
                 </td>
                 <td>
-                    {{ $venta->ComoSeEntero }}
+                    {{ $venta['como_se_entero'] }}
                 </td>
                 <td>
-                    {{ $venta->tipo_llamada }}
+                    {{ $venta['tipo_llamada'] }}
                 </td>
                 <td>
-                    {{ $venta->diffForhumans() }}
+                    {{ $venta['created'] }}
                 </td>
             </tr>
             @endforeach

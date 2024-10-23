@@ -1029,9 +1029,7 @@ class ReservacionController extends Controller
             })
             ->addColumn('actions', function ($asignadas) {
                 $btn = '';
-
                 $btn .= '<a href="' . route('users.show', $asignadas->user_id) . '"  class="btn btn-dark btn-xs" id="btnEditarAsignacion"><i class="fas fa-edit"></i></a>';
-
                 return $btn;
             })
             ->rawColumns(['nombre_add', 'email_add', 'destino_add', 'info_reserva', 'actions'])

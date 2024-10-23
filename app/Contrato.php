@@ -10,6 +10,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Date\Date;
 use Illuminate\Support\Facades\DB;
+use Auth;
 use Log;
 
 class Contrato extends Model
@@ -646,6 +647,18 @@ class Contrato extends Model
         $response['log']=DB::select('SELECT @log AS log')[0]->log;
         $response=json_decode(json_encode($response), true);
         //Log::debug("response  sp_contratos_porUsuario :: ".print_r($response,1));
+        return $response;
+    }
+
+    public function sp_ventas_filtradoContratos($p_json) 
+    {
+        $id_usuario =  Auth::user()->id;
+        $response['data']=DB::select('CALL sp_ventas_filtradoContratos(?,?,@success, @message, @log)', [$p_json,$id_usuario]);
+        $response['success']=DB::select('SELECT @success AS success')[0]->success;
+        $response['message']=DB::select('SELECT @message AS message')[0]->message;
+        $response['log']=DB::select('SELECT @log AS log')[0]->log;
+        $response=json_decode(json_encode($response), true);
+        //Log::debug("response  sp_clientes_porUsuario :: ".print_r($response,1));
         return $response;
     }
 

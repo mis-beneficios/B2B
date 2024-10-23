@@ -107,6 +107,22 @@ class BeneficiosServiceProvider extends ServiceProvider
             'quality'      => 'Control de Calidad',
             'control'      => 'Control de Ventas',
         );
+            /*$como_se_entero = array(
+                // 1  => 'redes sociales',
+                // 2  => 'correo electronico',
+                3  => 'Búsqueda WEb',
+                4  => 'Flyer promocional',
+                5  => 'Recomendación',
+                6  => 'Otros',
+                7  => 'Llamada telemarketing',
+                8  => 'Venta directa',
+                // 9  => 'whatsapp',
+                10 => 'Gopacific',
+                11 => 'Transporte publico',
+                12 => 'IMSS - CLM',
+                13 => 'Redes Sociales',
+                20 => 'Amando a México',
+            );*/
 
         $tipo_pago = array(
             'semanal'           => 'SEMANAL: Un día por semana',
@@ -244,35 +260,35 @@ class BeneficiosServiceProvider extends ServiceProvider
             */
 
 
-        session(['config' => [
-            'estancias_global'     => $estancias_global->toArray(),
-            'bancos_mx'            => $bancos_mx->toArray(),
-            'register'             => $register,
-            'roles'                => $roles,
-            'como_se_entero'       => $como_se_entero,
-            'cuotas'               => $cuotas,
-            'divisas'              => $divisas,
-            'estatus_tarjetas'     => $estatus_tarjetas,
-            'estatus_pagos'        => $estatus_pagos,
-            'estatus_concal'       => $estatus_concal,
-            'destinos'             => $destinos,
-            'regiones'             => $regiones,
-            'paises'               => $paises->toArray(),
-            //'tipo_reservacion'     => $tipo_reservacion,
-            //'estatus_reservacion'  => $estatus_reservacion,
-            //'estatus_pago'         => $estatus_pago,
-            //'garantia_reservacion' => $garantia_reservacion,
-            //'filtros_fecha'        => $filtros_fecha,
-            //'tipo_garantia'        => $tipo_garantia,
-            'convenios'            => $convenios_mx->toArray(),
-            'tipo_pago_g'          => $tipo_pago,
-            'back_image'           => $back_image,
-            'preload_image'        => $preload_image,
-            'cal_temp'             => $cal_temp,
-            'tipo_estancia'        => $tipo_estancia,
-            // 'notificaciones'       => $notificaciones,
-        ]]);
-        // });
+            session(['config'=>[
+                'estancias_global'     => $estancias_global->toArray(),
+                'bancos_mx'            => $bancos_mx->toArray(),
+                'register'             => $register,
+                'roles'                => $roles,
+                //'como_se_entero'       => $como_se_entero,
+                'cuotas'               => $cuotas,
+                'divisas'              => $divisas,
+                'estatus_tarjetas'     => $estatus_tarjetas,
+                'estatus_pagos'        => $estatus_pagos,
+                'estatus_concal'       => $estatus_concal,
+                'destinos'             => $destinos,
+                'regiones'             => $regiones,
+                'paises'               => $paises->toArray(),
+                //'tipo_reservacion'     => $tipo_reservacion,
+                //'estatus_reservacion'  => $estatus_reservacion,
+                //'estatus_pago'         => $estatus_pago,
+                //'garantia_reservacion' => $garantia_reservacion,
+                //'filtros_fecha'        => $filtros_fecha,
+                //'tipo_garantia'        => $tipo_garantia,
+                'convenios'            => $convenios_mx->toArray(),
+                'tipo_pago_g'          => $tipo_pago,
+                'back_image'           => $back_image,
+                'preload_image'        => $preload_image,
+                'cal_temp'             => $cal_temp,
+                //'tipo_estancia'        => $tipo_estancia,
+                // 'notificaciones'       => $notificaciones,
+            ]]);
+       // });
     }
 
     /**
